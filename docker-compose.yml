@@ -1,0 +1,17 @@
+
+version: '3.5'
+
+volumes: 
+  grafana_data: 
+services:
+     grafana:
+          image: grafana/grafana-
+          volumes:
+               - grafana_data:/var/lib/grafana
+          ports:
+                - 3000:3000
+          healthcheck:
+               test: 'curl -fsSL -o /dev/null http://localhost:3000/login'
+               interval: 10s
+               timeout: 1s
+               retries: 3
