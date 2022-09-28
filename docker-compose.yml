@@ -4,12 +4,36 @@ version: '3.5'
 volumes: 
   grafana_data: 
 services:
+     relay:
+          image: grafana/carbon-relay-ng
+          depends_on:
+               - carbon
+          ports:
+               - '2003:2003'
+          healthcheck:
+               test: nc -zv localhost 2003
+               interval: 10s
+               timeout: 1s
+               retries: 3
+     carbon:
+          image: ghcr.io/go-graphite/go-carbon:latest
+          volumes:
+               - ./config/go-carbon.conf:/etc/go-carbon/go-carbon.conf:ro
+               - ./config/storage-schemas.conf:/etc/go-carbon/storage-schemas.conf:ro
+               - ./carbon-storage:/var/lib/graphite
+          healthcheck:
+               test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
+               interval: 10s
+               timeout: 1s
+               retries: 3
      grafana:
           image: grafana/grafana-oss:9.1.6
           volumes:
                - grafana_data:/var/lib/grafana
           ports:
                 - 3000:3000
+          depends_on:
+               - relay
           healthcheck:
                test: 'curl -fsSL -o /dev/null http://localhost:3000/login'
                interval: 10s
