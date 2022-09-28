@@ -18,18 +18,43 @@ services:
      carbon:
           image: ghcr.io/go-graphite/go-carbon:latest
           volumes:
-               - ./config/go-carbon.conf:/etc/go-carbon/go-carbon.conf:ro
-               - ./config/storage-schemas.conf:/etc/go-carbon/storage-schemas.conf:ro
+              #  - ./config/go-carbon:/etc/go-carbon
                - ./carbon-storage:/var/lib/graphite
-          healthcheck:
-               test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
-               interval: 10s
-               timeout: 1s
-               retries: 3
+          # healthcheck:
+          #      test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
+          #      interval: 10s
+          #      timeout: 1s
+          #      retries: 3
+    #  api:
+    #       image: openmetric/carbonapi:latest
+    #       volumes:
+    #            - ./config/carbonapi/api.yaml:/openmetric/conf/api.yaml:ro
+    #       depends_on:
+    #            - relay
+    #       healthcheck:
+    #            test: 'curl -fsSL -o /dev/null http://localhost:8080/lb_check'
+    #            interval: 10s
+    #            timeout: 1s
+    #            retries: 3
+     api:
+          image: carbonapi
+          volumes:
+               - ./config/carbonapi/carbonapi.yml:/etc/carbonapi.yml:ro
+               - ./config/carbonapi/graphTemplates.yaml:/etc/graphTemplates.yaml:ro
+               - ./config/carbonapi/timeShift.yaml:/etc/timeShift.yaml:ro
+               - ./config/carbonapi/graphiteWeb.yaml:/etc/graphiteWeb.yaml:ro
+          # depends_on:
+          #      - relay
+          # healthcheck:
+          #      test: 'curl -fsSL -o /dev/null http://localhost:8080/lb_check'
+          #      interval: 10s
+          #      timeout: 1s
+          #      retries: 3
      grafana:
-          image: grafana/grafana-oss:9.1.6
+          image: grafana/grafana-enterprise:9.0.4-ubuntu
           volumes:
                - grafana_data:/var/lib/grafana
+               - ./config/grafana:/etc/grafana
           ports:
                 - 3000:3000
           depends_on:
@@ -39,3 +64,6 @@ services:
                interval: 10s
                timeout: 1s
                retries: 3
+     # api:
+     #      restart: unless-stopped
+     #      build: .
