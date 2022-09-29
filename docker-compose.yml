@@ -4,10 +4,27 @@ version: '3.5'
 volumes: 
   grafana_data: 
 services:
+     # relay:
+     #      image: grafana/carbon-relay-ng
+     #      depends_on:
+     #           - carbon
+     #      volumes:
+     #           - ./config/relay:/conf
+     #      ports:
+     #           - '2003:2003'
+     #           - '2013:2013'
+     #           - '8081:8081'
+     #      healthcheck:
+     #           test: nc -zv localhost 2003
+     #           interval: 10s
+     #           timeout: 1s
+     #           retries: 3
      relay:
-          image: grafana/carbon-relay-ng
+          image: carbon-c-relay
           depends_on:
                - carbon
+          volumes:
+               - ./config/relay/relay.conf:/etc/carbon-c-relay/carbon-c-relay.conf
           ports:
                - '2003:2003'
           healthcheck:
@@ -18,38 +35,29 @@ services:
      carbon:
           image: ghcr.io/go-graphite/go-carbon:latest
           volumes:
-              #  - ./config/go-carbon:/etc/go-carbon
+               - ./config/go-carbon:/etc/go-carbon
                - ./carbon-storage:/var/lib/graphite
-          # healthcheck:
-          #      test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
-          #      interval: 10s
-          #      timeout: 1s
-          #      retries: 3
-    #  api:
-    #       image: openmetric/carbonapi:latest
-    #       volumes:
-    #            - ./config/carbonapi/api.yaml:/openmetric/conf/api.yaml:ro
-    #       depends_on:
-    #            - relay
-    #       healthcheck:
-    #            test: 'curl -fsSL -o /dev/null http://localhost:8080/lb_check'
-    #            interval: 10s
-    #            timeout: 1s
-    #            retries: 3
+          healthcheck:
+               test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
+               interval: 10s
+               timeout: 1s
+               retries: 3
      api:
           image: carbonapi
           volumes:
                - ./config/carbonapi/carbonapi.yml:/etc/carbonapi.yml:ro
-               - ./config/carbonapi/graphTemplates.yaml:/etc/graphTemplates.yaml:ro
                - ./config/carbonapi/timeShift.yaml:/etc/timeShift.yaml:ro
+               - ./config/carbonapi/graphTemplates.yaml:/etc/graphTemplates.yaml:ro
                - ./config/carbonapi/graphiteWeb.yaml:/etc/graphiteWeb.yaml:ro
-          # depends_on:
-          #      - relay
-          # healthcheck:
-          #      test: 'curl -fsSL -o /dev/null http://localhost:8080/lb_check'
-          #      interval: 10s
-          #      timeout: 1s
-          #      retries: 3
+               - ./config/carbonapi/aliasByRedis.yaml:/etc/aliasByRedis.yaml:ro
+               - ./config/carbonapi/moving.yaml:/etc/moving.yaml:ro
+          depends_on:
+               - relay
+          healthcheck:
+               test: 'curl -fsSL -o /dev/null http://localhost:8080/lb_check'
+               interval: 10s
+               timeout: 1s
+               retries: 3
      grafana:
           image: grafana/grafana-enterprise:9.0.4-ubuntu
           volumes:
@@ -64,6 +72,3 @@ services:
                interval: 10s
                timeout: 1s
                retries: 3
-     # api:
-     #      restart: unless-stopped
-     #      build: .
