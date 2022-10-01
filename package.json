@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "graphite": "^0.1.5",
+    "winston": "^3.8.2"
+  },
+  "name": "go-grafana-graphite",
+  "description": "Fast and easy to deploy.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pieterbrandsen/Go-Grafana-Graphite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pieterbrandsen/Go-Grafana-Graphite/issues"
+  },
+  "homepage": "https://github.com/pieterbrandsen/Go-Grafana-Graphite#readme"
+}

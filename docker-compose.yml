@@ -4,34 +4,48 @@ version: '3.5'
 volumes: 
   grafana_data: 
 services:
-     # relay:
-     #      image: grafana/carbon-relay-ng
+     handle_incoming:
+          build: .
+          restart: unless-stopped
+          ports:
+               - 8080:8080
+     # relay2:
+     #      image: openmetric/carbon-c-relay:latest
+     #      volumes:
+     #           - ./config/relay/relay.conf:/openmetric/conf/relay.conf:ro
      #      depends_on:
      #           - carbon
-     #      volumes:
-     #           - ./config/relay:/conf
      #      ports:
-     #           - '2003:2003'
-     #           - '2013:2013'
-     #           - '8081:8081'
+     #           - '2004:2004'
      #      healthcheck:
-     #           test: nc -zv localhost 2003
+     #           test: nc -zv localhost 2004
      #           interval: 10s
      #           timeout: 1s
      #           retries: 3
      relay:
-          image: carbon-c-relay
+          image: grafana/carbon-relay-ng
           depends_on:
                - carbon
           volumes:
-               - ./config/relay/relay.conf:/etc/carbon-c-relay/carbon-c-relay.conf
-          ports:
-               - '2003:2003'
+               - ./config/relay:/conf
           healthcheck:
                test: nc -zv localhost 2003
                interval: 10s
                timeout: 1s
                retries: 3
+     # relay:
+     #      image: carbon-c-relay
+     #      depends_on:
+     #           - carbon
+     #      volumes:
+     #           - ./config/relay/relay.conf:/etc/carbon-c-relay/carbon-c-relay.conf
+     #      ports:
+     #           - '2003:2003'
+     #      healthcheck:
+     #           test: nc -zv localhost 2003
+     #           interval: 10s
+     #           timeout: 1s
+     #           retries: 3
      carbon:
           image: ghcr.io/go-graphite/go-carbon:latest
           volumes:
