@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const graphite = require("graphite");
 const client = graphite.createClient('plaintext://relay:2003');
 const winston = require("winston");
-
+  
 const logger = winston.createLogger({
     transports: [
       new winston.transports.Console(),
