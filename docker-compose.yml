@@ -6,7 +6,7 @@ services:
   api:
     build: .
     ports:
-      - "5000:5000"
+      - "8000:8000"
     volumes:
       - ./carbon-storage:/var/lib/graphite/whisper
       - ./logs:/app/logs

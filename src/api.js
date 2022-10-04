@@ -27,7 +27,7 @@ app.post("/deletePath", (req, res) => {
     res.status(result.code).send(result.message);
 });
 
-const port = 5000;
+const port = 8000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
