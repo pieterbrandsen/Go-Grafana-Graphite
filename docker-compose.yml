@@ -42,6 +42,15 @@ services:
       interval: 10s
       timeout: 1s
       retries: 3
+  gateway:
+    image: stats-gateway
+    depends_on:
+      - api
+      - grafana
+    environment:
+     - BACKEND_URL=http://api:8081
+     - GRAFANA_URL=http://grafana:3000
+    
   grafana:
     image: grafana/grafana-enterprise:9.0.4-ubuntu
     volumes:
