@@ -3,6 +3,14 @@ version: "3.5"
 volumes:
   grafana_data:
 services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./carbon-storage:/var/lib/graphite/whisper
+      - ./logs:/app/logs
+
   relay:
     image: grafana/carbon-relay-ng
     depends_on:
@@ -26,7 +34,7 @@ services:
       interval: 10s
       timeout: 1s
       retries: 3
-  api:
+  carbonapi:
     image: carbonapi
     volumes:
       - ./config/carbonapi/carbonapi.yml:/etc/carbonapi.yml:ro
@@ -45,10 +53,10 @@ services:
   gateway:
     image: stats-gateway
     depends_on:
-      - api
+      - carbonapi
       - grafana
     environment:
-     - BACKEND_URL=http://api:8081
+     - BACKEND_URL=http://carbonapi:8081
      - GRAFANA_URL=http://grafana:3000
   grafana:
     image: grafana/grafana-oss:9.0.4-ubuntu
