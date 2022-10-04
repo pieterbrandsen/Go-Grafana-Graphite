@@ -51,7 +51,7 @@ services:
      - BACKEND_URL=http://api:8081
      - GRAFANA_URL=http://grafana:3000
   grafana:
-    image: grafana/grafana-enterprise:9.0.4-ubuntu
+    image: grafana/grafana-oss:9.0.4-ubuntu
     volumes:
       - grafana_data:/var/lib/grafana
       - ./config/grafana:/etc/grafana
