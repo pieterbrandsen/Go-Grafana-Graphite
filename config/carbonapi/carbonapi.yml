@@ -87,7 +87,7 @@ maxBatchSize: 100
 graphite:
     # Host:port where to send internal metrics
     # Empty = disabled
-    host: ""
+    host: "carbon:2003"
     interval: "60s"
     prefix: "carbon.api"
     # rules on how to construct metric name. For now only {prefix} and {fqdn} is supported.
