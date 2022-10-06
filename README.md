@@ -56,6 +56,8 @@ Login with
 - username: admin
 - password: password
 
+Its advised to change the password after login.
+
 ## Configuration
 
 If you would like you can update the configuration files in the config folder. The configuration files are based on the default configuration files from the projects.

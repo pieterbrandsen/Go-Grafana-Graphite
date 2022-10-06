@@ -1,8 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
-import deletePath from "./deletePath.js";
-
 import winston from 'winston';
+
+import deletePath from "./deletePath.js";
+import setupUser from "./setupUser.js";
 
 const logger = winston.createLogger({
   level: 'info',
@@ -26,6 +27,12 @@ app.post("/deletePath", (req, res) => {
     logger.info(`${req.body.path}, Result: ${JSON.stringify(result)}`);
     res.status(result.code).send(result.message);
 });
+app.post("/setupUser", async (req, res) => {
+    logger.info(`${req.ip}, SetupUser called with username: ${req.body.username}`);
+    const result = await setupUser(req.body);
+    logger.info(`${req.body.username}, Result: ${JSON.stringify(result)}`);
+    res.status(result.code).send(result.message);
+})
 
 const port = 8000;
 app.listen(port, () => {
