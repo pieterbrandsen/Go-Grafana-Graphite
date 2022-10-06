@@ -115,7 +115,6 @@ export default async function SetupUser(config) {
 
     const user = await CreateUser(config);
     if (user.status) return { code: user.status, message: user.data.message };
-    const userId = user.id;
 
     const org = await GetOrg(config.email);
     if (org.status) return { code: org.status, message: org.data.message };
