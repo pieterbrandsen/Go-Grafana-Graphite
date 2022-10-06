@@ -13,14 +13,21 @@ Don't forget to place an nice star on this repo if you like it.
 
 ## How to use
 
+Logs for Grafana are currently non functional
+
 | Important folder locations | Path |
 | --- | ----------- |
 | Grafana config  | /etc/grafana |
 | Grafana data | /var/lib/grafana |
-| Go-carbon config | /etc/go-carbon |
-| Go-carbon data | /var/lib/go-carbon |
+| Grafana log | /var/log/grafana |
+| Go-carbon config file | /etc/go-carbon/go-carbon.conf |
+| Go-carbon config folder | /conf |
+| Go-carbon data | /go-carbon-storage |
+| Go-carbon log | /log |
+| Carbonapi config file | /etc/carbonapi.yml |
+| Carbonapi config folder | /conf |
+| Carbonapi log | /log |
 | Relay config | /conf |
-| Carbonapi config | /etc |
 | CustomApi logs | /app/logs |
 
 ### Installation

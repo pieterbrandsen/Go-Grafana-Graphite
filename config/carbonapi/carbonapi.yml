@@ -78,16 +78,16 @@ tz: ""
 # If set to true, tags are extracted from seriesByTag arguments
 #extractTagsFromArgs: false
 functionsConfig:
-    graphiteWeb: /etc/graphiteWeb.yaml
-    timeShift: /etc/timeShift.yaml
-    moving: /etc/moving.yaml
-    movingMedian: /etc/moving.yaml
-    aliasByRedis: /etc/aliasByRedis.yaml
+    graphiteWeb: /conf/graphiteWeb.yaml
+    timeShift: /conf/timeShift.yaml
+    moving: /conf/moving.yaml
+    movingMedian: /conf/moving.yaml
+    aliasByRedis: /conf/aliasByRedis.yaml
 maxBatchSize: 100
 graphite:
     # Host:port where to send internal metrics
     # Empty = disabled
-    host: "carbon:2003"
+    host: "go-carbon:2003"
     interval: "60s"
     prefix: "stats.carbonapi.agents"
     # rules on how to construct metric name. For now only {prefix} and {fqdn} is supported.
@@ -152,7 +152,7 @@ upstreams:
     # "http://host:port" array of instances of carbonserver stores
     # It MUST be specified.
     backends:
-        - "http://carbon:8080"
+        - "http://go-carbon:8080"
 
     #backends section will override this one!
     backendsv2:
@@ -162,13 +162,13 @@ upstreams:
             protocol: "carbonapi_v3_pb"
             lbMethod: "roundrobin"
             servers:
-                - "http://carbon:8080"
+                - "http://go-carbon:8080"
 
 
     # carbonsearch is not used if empty
     # carbonsearch:
     #     # Instance of carbonsearch backend
-    #     backend: "http://carbon:8070"
+    #     backend: "http://go-carbon:8070"
     #     # carbonsearch prefix to reserve/register
     #     prefix: "virt.v1.*"
     #     # carbonsearch is not used if empty
@@ -181,7 +181,7 @@ upstreams:
               protocol: "carbonapi_v3_pb"
               lbMethod: "broadcast"
               servers:
-                  - "http://carbon:8080"
+                  - "http://go-carbon:8080"
         # carbonsearch prefix to reserve/register
         prefix: "virt.v1.*"
 
@@ -192,7 +192,7 @@ upstreams:
 # If not zero, enabled cache for find requests
 # This parameter controls when it will expire (in seconds)
 # Default: 600 (10 minutes)
-# graphTemplates: /etc/graphTemplates.yaml
+# graphTemplates: /conf/graphTemplates.yaml
 expireDelaySec: 10
 # Uncomment this to get the behavior of graphite-web as proposed in https://github.com/graphite-project/graphite-web/pull/2239
 # Beware this will make darkbackground graphs less readable
@@ -211,6 +211,6 @@ logger:
       encodingTime: "iso8601"
       encodingDuration: "seconds"
     - logger: ""
-      file: "carbonapi.log"
+      file: "log/carbonapi.log"
       level: "info"
       encoding: "json"

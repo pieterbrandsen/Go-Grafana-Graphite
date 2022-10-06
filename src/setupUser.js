@@ -1,4 +1,18 @@
 import axios from 'axios';
+import winston from 'winston';
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.Console({
+        format: winston.format.simple(),
+      })
+  ],
+});
+
 
 const grafanaApiUrl = process.env.GRAFANA_URL+"/api";
 const adminLogin = {
@@ -15,6 +29,7 @@ async function GetOrg(name) {
         });
         return result.data;
     } catch (err) {
+        logger.error(`GetOrg error! ${JSON.stringify(err)}`);
         return err.response;
     }
 }
@@ -48,6 +63,7 @@ async function SwitchToOrg(orgId,userLogin) {
         });
         return result.data;
     } catch (err) {
+        logger.error(`SwitchToOrg error! ${JSON.stringify(err)}`);
         return err.response;
     }
 }
@@ -73,6 +89,7 @@ async function CreateDatasource(userLogin) {
         });
         return result.data;
     } catch (err) {
+        logger.error(`CreateDatasource error! ${JSON.stringify(err)}`);
         return err.response;
     }
 }
@@ -100,6 +117,7 @@ async function CreateDashboard(userLogin) {
         });
         return result.data;
     } catch (err) {
+        logger.error(`CreateDashboard error! ${JSON.stringify(err)}`);
         return err.response;
     }
 }

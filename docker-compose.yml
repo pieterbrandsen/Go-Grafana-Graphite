@@ -9,8 +9,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./carbon-storage:/var/lib/graphite/whisper
-      - ./logs:/app/logs
+      - ./go-carbon-storage/whisper:/go-carbon-storage
+      - ./logs/api:/app/logs
     environment:
      - GRAFANA_URL=http://grafana:3000
      - GRAFANA_USER=admin
@@ -18,12 +18,12 @@ services:
     networks:
       - frontend
       - backend
-  relay:
+  carbon-relay-ng:
     image: grafana/carbon-relay-ng
     depends_on:
-      - carbon
+      - go-carbon
     volumes:
-      - ./config/relay:/conf
+      - ./config/carbon-relay-ng:/conf
     ports:
       - "2003:2003"
     healthcheck:
@@ -34,11 +34,13 @@ services:
     networks:
       - frontend
       - backend
-  carbon:
+  go-carbon:
     image: ghcr.io/go-graphite/go-carbon:latest
     volumes:
-      - ./config/go-carbon:/etc/go-carbon
-      - ./carbon-storage:/var/lib/graphite/whisper
+      - ./config/go-carbon/go-carbon.conf:/etc/go-carbon/go-carbon.conf
+      - ./config/go-carbon:/conf
+      - ./go-carbon-storage:/go-carbon-storage
+      - ./logs/gocarbon:/log
     healthcheck:
       test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
       interval: 10s
@@ -49,14 +51,16 @@ services:
   carbonapi:
     image: carbonapi
     volumes:
-      - ./config/carbonapi/carbonapi.yml:/etc/carbonapi.yml:ro
-      - ./config/carbonapi/timeShift.yaml:/etc/timeShift.yaml:ro
-      - ./config/carbonapi/graphTemplates.yaml:/etc/graphTemplates.yaml:ro
-      - ./config/carbonapi/graphiteWeb.yaml:/etc/graphiteWeb.yaml:ro
-      - ./config/carbonapi/aliasByRedis.yaml:/etc/aliasByRedis.yaml:ro
-      - ./config/carbonapi/moving.yaml:/etc/moving.yaml:ro
+      - ./config/carbonapi/carbonapi.yml:/etc/carbonapi.yml
+      # - ./config/carbonapi/timeShift.yaml:/conf/timeShift.yaml:ro
+      # - ./config/carbonapi/graphTemplates.yaml:/conf/graphTemplates.yaml:ro
+      # - ./config/carbonapi/graphiteWeb.yaml:/conf/graphiteWeb.yaml:ro
+      # - ./config/carbonapi/aliasByRedis.yaml:/conf/aliasByRedis.yaml:ro
+      # - ./config/carbonapi/moving.yaml:/conf/moving.yaml:ro
+      - ./config/carbonapi:/conf:ro
+      - ./logs/carbonapi:/log
     depends_on:
-      - relay
+      - carbon-relay-ng
     healthcheck:
       test: "curl -fsSL -o /dev/null http://localhost:8080/lb_check"
       interval: 10s
@@ -64,7 +68,7 @@ services:
       retries: 3
     networks:
       - backend
-  gateway:
+  stats-gateway:
     image: stats-gateway
     depends_on:
       - carbonapi
@@ -80,10 +84,11 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./config/grafana:/etc/grafana
+      - ./logs/grafana:/var/log/grafana
     ports:
       - 3000:3000
     depends_on:
-      - relay
+      - carbon-relay-ng
     healthcheck:
       test: "curl -fsSL -o /dev/null http://localhost:3000/login"
       interval: 10s
@@ -96,10 +101,11 @@ services:
     volumes:
       - private_grafana_data:/var/lib/grafana
       - ./config/grafana:/etc/grafana
+      - ./logs/privategrafana:/var/log/grafana
     ports:
       - 3001:3000
     depends_on:
-      - relay
+      - carbon-relay-ng
     healthcheck:
       test: "curl -fsSL -o /dev/null http://localhost:3000/login"
       interval: 10s

@@ -15,7 +15,7 @@ const logger = winston.createLogger({
 });
 
 
-const base = "/var/lib/graphite/whisper";
+const base = "/go-carbon-storage";
 
 export default function deletePath(path) {
     if (!path) return { code: 400, message: "Path is required" };
@@ -28,7 +28,7 @@ export default function deletePath(path) {
         if (fs.existsSync(fullPath + ".wsp")) fullPath += ".wsp";
         else return { code: 404, message: "Path does not exist" }
     };
-    logger.error(`Dele23223ting ${fullPath}`);
+    logger.info(`Deleting ${fullPath}`);
 
     fs.rmSync(fullPath, { recursive: true });
     return { code: 200, message: "Path deleted" };
