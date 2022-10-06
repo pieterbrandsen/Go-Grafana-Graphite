@@ -89,7 +89,7 @@ graphite:
     # Empty = disabled
     host: "carbon:2003"
     interval: "60s"
-    prefix: "carbon.api"
+    prefix: "stats.carbonapi.agents"
     # rules on how to construct metric name. For now only {prefix} and {fqdn} is supported.
     # {prefix} will be replaced with the content of {prefix}
     # {fqdn} will be repalced with fqdn

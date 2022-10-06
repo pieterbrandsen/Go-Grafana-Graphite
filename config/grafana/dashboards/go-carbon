@@ -135,7 +135,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.tcp.metricsReceived), 3)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.tcp.metricsReceived), 3)"
         },
         {
           "datasource": {
@@ -144,7 +144,7 @@
           },
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.udp.metricsReceived), 3)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.udp.metricsReceived), 3)"
         },
         {
           "datasource": {
@@ -153,7 +153,7 @@
           },
           "refCount": 0,
           "refId": "C",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.pickle.metricsReceived), 3)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.pickle.metricsReceived), 3)"
         },
         {
           "datasource": {
@@ -162,7 +162,7 @@
           },
           "refCount": 0,
           "refId": "D",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.*.errors), 4)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.*.errors), 4)"
         }
       ],
       "title": "Metric Inputs",
@@ -257,7 +257,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "alias(sumSeries(carbon.agents.$agent.persister.updateOperations), 'Updates')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.persister.updateOperations), 'Updates')"
         },
         {
           "datasource": {
@@ -266,7 +266,7 @@
           },
           "refCount": 0,
           "refId": "C",
-          "target": "alias(sumSeries(carbon.agents.$agent.persister.committedPoints), 'Committed Points')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.persister.committedPoints), 'Committed Points')"
         },
         {
           "datasource": {
@@ -275,7 +275,7 @@
           },
           "refCount": 0,
           "refId": "F",
-          "target": "alias(sumSeries(carbon.agents.$agent.persister.created), 'Creates')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.persister.created), 'Creates')"
         },
         {
           "datasource": {
@@ -284,7 +284,7 @@
           },
           "refCount": 0,
           "refId": "D",
-          "target": "alias(sumSeries(carbon.agents.$agent.persister.pointsPerUpdate), 'Points per Update')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.persister.pointsPerUpdate), 'Points per Update')"
         }
       ],
       "title": "Persister Actions",
@@ -460,7 +460,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.cache.size), 4)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.cache.size), 4)"
         },
         {
           "datasource": {
@@ -469,7 +469,7 @@
           },
           "refCount": 0,
           "refId": "B",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.cache.queries), 4)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.cache.queries), 4)"
         },
         {
           "datasource": {
@@ -478,7 +478,7 @@
           },
           "refCount": 0,
           "refId": "C",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.cache.maxSize), 4)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.cache.maxSize), 4)"
         },
         {
           "datasource": {
@@ -487,7 +487,7 @@
           },
           "refCount": 0,
           "refId": "D",
-          "target": "aliasByNode(sumSeries(carbon.agents.$agent.cache.overflow), 4)"
+          "target": "aliasByNode(sumSeries(stats.gocarbon.agents.$agent.cache.overflow), 4)"
         }
       ],
       "title": "Cache Status",
@@ -595,7 +595,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "alias(sumSeries(carbon.agents.$agent.cache.queueWriteoutTime), 'Queue Writeout Time')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.cache.queueWriteoutTime), 'Queue Writeout Time')"
         },
         {
           "datasource": {
@@ -604,7 +604,7 @@
           },
           "refCount": 0,
           "refId": "B",
-          "target": "alias(sumSeries(carbon.agents.$agent.cache.queueBuildTimeMs), 'Queue Build Time')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.cache.queueBuildTimeMs), 'Queue Build Time')"
         },
         {
           "datasource": {
@@ -614,7 +614,7 @@
           "hide": false,
           "refCount": 0,
           "refId": "C",
-          "target": "alias(sumSeries(carbon.agents.$agent.cache.queueBuildCount), 'Queue Rebuilds')"
+          "target": "alias(sumSeries(stats.gocarbon.agents.$agent.cache.queueBuildCount), 'Queue Rebuilds')"
         }
       ],
       "title": "Queue Stats",
@@ -676,7 +676,7 @@
             "uid": "P1D261A8554D2DA69"
           },
           "refId": "A",
-          "target": "alias(sumSeries(carbon.agents.*.persister.committedPoints), 'Commited', false)"
+          "target": "alias(sumSeries(stats.gocarbon.agents.*.persister.committedPoints), 'Commited', false)"
         }
       ],
       "title": "Comitted",
@@ -738,7 +738,7 @@
             "uid": "P1D261A8554D2DA69"
           },
           "refId": "A",
-          "target": "alias(sumSeries(carbon.agents.*.persister.updateOperations), 'Updates', false)"
+          "target": "alias(sumSeries(stats.gocarbon.agents.*.persister.updateOperations), 'Updates', false)"
         }
       ],
       "title": "Updates",
@@ -800,7 +800,7 @@
             "uid": "P1D261A8554D2DA69"
           },
           "refId": "A",
-          "target": "alias(sumSeries(carbon.agents.*.persister.created), 'Commited', false)"
+          "target": "alias(sumSeries(stats.gocarbon.agents.*.persister.created), 'Commited', false)"
         }
       ],
       "title": "Created files",
@@ -862,7 +862,7 @@
             "uid": "P1D261A8554D2DA69"
           },
           "refId": "A",
-          "target": "sumSeries(carbon.agents.*.persister.throttledCreates)"
+          "target": "sumSeries(stats.gocarbon.agents.*.persister.throttledCreates)"
         }
       ],
       "title": "Throttled new files",
@@ -892,14 +892,14 @@
           "type": "graphite",
           "uid": "P1D261A8554D2DA69"
         },
-        "definition": "carbon.agents.*",
+        "definition": "stats.gocarbon.agents.*",
         "hide": 0,
         "includeAll": true,
         "label": "Carbon Agent",
         "multi": true,
         "name": "agent",
         "options": [],
-        "query": "carbon.agents.*",
+        "query": "stats.gocarbon.agents.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
