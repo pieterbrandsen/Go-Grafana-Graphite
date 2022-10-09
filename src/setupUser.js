@@ -1,5 +1,6 @@
 import axios from 'axios';
 import winston from 'winston';
+import fs from 'fs';
 
 const logger = winston.createLogger({
   level: 'info',
@@ -100,20 +101,7 @@ async function CreateDashboard(userLogin) {
             url: `${grafanaApiUrl}/dashboards/db`,
             method: 'post',
             auth: userLogin,
-            data: {
-                "dashboard": {
-                    "id": null,
-                    "uid": null,
-                    "title": "Production Overview",
-                    "tags": [ "templated" ],
-                    "timezone": "browser",
-                    "schemaVersion": 16,
-                    "version": 0,
-                    "refresh": "25s"
-                  },
-                  "message": "Made changes to xyz",
-                  "overwrite": false
-              },
+            data: {dashboard: fs.readFileSync('../exampleStats/dashboard.json', 'utf8')},
         });
         return result.data;
     } catch (err) {
