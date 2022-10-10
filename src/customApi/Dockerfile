@@ -4,7 +4,7 @@ FROM node:16.17.0
 ENV NODE_ENV=production
 
 WORKDIR "/app"
-COPY src .
+COPY . .
 RUN npm install --production
 
 RUN mkdir "/logs"

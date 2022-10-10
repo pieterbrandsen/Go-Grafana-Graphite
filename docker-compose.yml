@@ -4,13 +4,13 @@ volumes:
   grafana_data:
   private_grafana_data:
 services:
-  api:
-    build: .
+  custom-api:
+    build: src/customApi
     ports:
       - "8000:8000"
     volumes:
       - ./go-carbon-storage/whisper:/go-carbon-storage
-      - ./logs/api:/app/logs
+      - ./logs/customApi:/app/logs
     environment:
      - GRAFANA_URL=http://grafana:3000
      - GRAFANA_USER=admin
@@ -18,6 +18,19 @@ services:
     networks:
       - frontend
       - backend
+    depends_on:
+      - grafana
+  stats-getter:
+    build: src/statsGetter
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./logs/statsGetter:/app/logs
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - carbon-relay-ng
   carbon-relay-ng:
     image: grafana/carbon-relay-ng
     depends_on:
