@@ -11,6 +11,14 @@ Don't forget to place an nice star on this repo if you like it.
 - Go
 - Make
 
+### Tech stack
+
+- [Grafana-OSS (9.0.4)](https://grafana.com/grafana/download/9.0.4?platform=docker)
+- [Go-carbon (latest)](https://github.com/go-graphite/go-carbon)
+- [Carbon-api (0.15.6)](https://github.com/go-graphite/carbonapi/releases/tag/v0.15.6)
+- [Carbon-relay-ng (latest)](https://github.com/grafana/carbon-relay-ng)
+- [Stats-gateway (latest)](https://github.com/ScreepsPlus/stats-gateway)
+
 ## How to use
 
 Logs for Grafana are currently non functional
@@ -29,6 +37,7 @@ Logs for Grafana are currently non functional
 | Carbonapi log | /log |
 | Relay config | /conf |
 | CustomApi logs | /app/logs |
+| StatsGetter logs | /app/logs |
 
 ### Installation
 
@@ -69,7 +78,7 @@ Its advised to change the password after login.
 
 If you would like you can update the configuration files in the config folder. The configuration files are based on the default configuration files from the projects.
 
-There are 2 dashboards included in `config/dashboards`. You can import them in Grafana.
+There are 2 telemetry dashboards included in `config/dashboards`. You can import them in Grafana when hosting it.
 
 ## Get support!
 
