@@ -10,6 +10,7 @@ services:
       - "8000:8000"
     volumes:
       - ./go-carbon-storage/whisper:/go-carbon-storage
+      - ./exampleStats/dashboard.json:/app/dashboard.json
       - ./logs/customApi:/app/logs
     environment:
      - GRAFANA_URL=http://grafana:3000
@@ -51,28 +52,18 @@ services:
     volumes:
       - ./config/go-carbon/go-carbon.conf:/etc/go-carbon/go-carbon.conf
       - ./config/go-carbon:/conf
-      - ./go-carbon-storage:/go-carbon-storage
-      - ./logs/gocarbon:/log
-    healthcheck:
-      test: "curl -fsSL -o /dev/null 'http://localhost:8080/metrics/find/?query=*&format=json'"
-      interval: 10s
-      timeout: 1s
-      retries: 3
+      - ./go-carbon-storage:/graphite
+      - ./logs/goCarbon:/log
     networks:
       - backend
-  carbonapi:
-    image: carbonapi
+  carbon-api:
+    image: carbon-api
     volumes:
       - ./config/carbonapi/carbonapi.yml:/etc/carbonapi.yml
-      # - ./config/carbonapi/timeShift.yaml:/conf/timeShift.yaml:ro
-      # - ./config/carbonapi/graphTemplates.yaml:/conf/graphTemplates.yaml:ro
-      # - ./config/carbonapi/graphiteWeb.yaml:/conf/graphiteWeb.yaml:ro
-      # - ./config/carbonapi/aliasByRedis.yaml:/conf/aliasByRedis.yaml:ro
-      # - ./config/carbonapi/moving.yaml:/conf/moving.yaml:ro
       - ./config/carbonapi:/conf:ro
-      - ./logs/carbonapi:/log
+      - ./logs/carbonApi:/log
     depends_on:
-      - carbon-relay-ng
+      - go-carbon
     healthcheck:
       test: "curl -fsSL -o /dev/null http://localhost:8080/lb_check"
       interval: 10s
@@ -83,10 +74,9 @@ services:
   stats-gateway:
     image: stats-gateway
     depends_on:
-      - carbonapi
-      - grafana
+      - carbon-api
     environment:
-     - BACKEND_URL=http://carbonapi:8081
+     - BACKEND_URL=http://carbon-api:8081
      - GRAFANA_URL=http://grafana:3000
     networks:
       - backend
@@ -100,7 +90,7 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - carbon-relay-ng
+      - stats-gateway
     healthcheck:
       test: "curl -fsSL -o /dev/null http://localhost:3000/login"
       interval: 10s
@@ -113,11 +103,11 @@ services:
     volumes:
       - private_grafana_data:/var/lib/grafana
       - ./config/grafana:/etc/grafana
-      - ./logs/privategrafana:/var/log/grafana
+      - ./logs/privateGrafana:/var/log/grafana
     ports:
       - 3001:3000
     depends_on:
-      - carbon-relay-ng
+      - carbon-api
     healthcheck:
       test: "curl -fsSL -o /dev/null http://localhost:3000/login"
       interval: 10s

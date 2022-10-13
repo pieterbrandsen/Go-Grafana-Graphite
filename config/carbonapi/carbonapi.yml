@@ -14,7 +14,7 @@ listeners:
         # # OR
         # - address: "localhost:8081"
 # # OR
-listen: "carbonapi:8081"
+listen: "carbon-api:8081"
 
 # Specify URL Prefix for all handlers
 prefix: ""

@@ -1,6 +1,11 @@
 import axios from 'axios';
 import winston from 'winston';
 import fs from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const logger = winston.createLogger({
   level: 'info',
@@ -97,11 +102,13 @@ async function CreateDatasource(userLogin) {
 
 async function CreateDashboard(userLogin) {
     try {
+        const dashboard = fs.readFileSync(`${__dirname}/dashboard.json`, 'utf8');
+        console.log(dashboard);
         const result = await axios({
             url: `${grafanaApiUrl}/dashboards/db`,
             method: 'post',
             auth: userLogin,
-            data: {dashboard: fs.readFileSync('../exampleStats/dashboard.json', 'utf8')},
+            data: {dashboard: JSON.parse(dashboard)},
         });
         return result.data;
     } catch (err) {

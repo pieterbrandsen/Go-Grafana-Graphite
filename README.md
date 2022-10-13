@@ -13,8 +13,6 @@ Don't forget to place an nice star on this repo if you like it.
 
 ## How to use
 
-Logs for Grafana are currently non functional
-
 | Important folder locations | Path |
 | --- | ----------- |
 | Grafana config  | /etc/grafana |
@@ -22,7 +20,7 @@ Logs for Grafana are currently non functional
 | Grafana log | /var/log/grafana |
 | Go-carbon config file | /etc/go-carbon/go-carbon.conf |
 | Go-carbon config folder | /conf |
-| Go-carbon data | /go-carbon-storage |
+| Go-carbon data | /graphite |
 | Go-carbon log | /log |
 | Carbonapi config file | /etc/carbonapi.yml |
 | Carbonapi config folder | /conf |
@@ -47,7 +45,28 @@ docker build -t stats-gateway .
 ```bash
 git clone https://github.com/go-graphite/carbonapi --branch v0.15.6
 cd carbonapi
-docker build -t carbonapi .
+docker build -t carbon-api .
+```
+
+> daemon (linux) mode only
+
+```bash
+# give the folder all required permissions to sync folders, if not set it will give permission denied.
+sudo chmod -R 777 .
+
+# percentage of your RAM which can be left unwritten to disk. MUST be much more than
+# your write rate, which is usually one FS block size (4KB) per metric.
+sysctl -w vm.dirty_ratio=80
+
+# percentage of yout RAM when background writer have to kick in and
+# start writes to disk. Make it way above the value you see in `/proc/meminfo|grep Dirty`
+# so that it doesn't interefere with dirty_expire_centisecs explained below
+sysctl -w vm.dirty_background_ratio=50
+
+# allow page to be left dirty no longer than 10 mins
+# if unwritten page stays longer than time set here,
+# kernel starts writing it out
+sysctl -w vm.dirty_expire_centisecs=$(( 10*60*100 ))
 ```
 
 ### Run
@@ -71,6 +90,6 @@ If you would like you can update the configuration files in the config folder. T
 
 There are 2 dashboards included in `config/dashboards`. You can import them in Grafana.
 
-## Get support!
+## Get support
 
 Add an issue on github or contact me on `Discord` (PANDA#7722)
