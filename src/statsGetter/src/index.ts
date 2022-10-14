@@ -14,12 +14,14 @@ new CronJob(
 new CronJob(
     '*/5 * * * * *',
     () => {
-        let i = 0;
-        while (configs[0].nextUpdate && configs[0].nextUpdate < new Date().getTime()) {
-            i++;
+        if (configs.length === 0 || !configs[0].nextUpdate) {
+            return;
+        }
+
+        while ((configs[0].nextUpdate || Infinity) < new Date().getTime()) {
             const config = configs[0];
             new HandleStatsGetter(config).Start();
-            UpdateConfigUpdateTime(configs, config);
+            configs = UpdateConfigUpdateTime(configs, config);
         };
     }
 ).start();
