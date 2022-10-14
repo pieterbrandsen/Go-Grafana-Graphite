@@ -19,22 +19,22 @@ const logger = winston.createLogger({
 });
 
 export default class HandleStatsGetter {
-  config;
-  host;
-  constructor(config) {
+  config:Config;
+  host:string;
+  constructor(config:Config) {
     this.config = config;
     this.host = this.GetHost()
   }
 
-  GetHost() {
+  GetHost():string {
     if (this.config.is_private_server) {
       return `http://${this.config.host}:${this.config.port}/api`;
     }
     return 'https://api.screeps.com:443/api';
   }
 
-  async req(path, method = 'GET', body = {}) {
-    const headers = {
+  async req(path:string, method = 'GET', body = {}):Promise<any> {
+    const headers:StringMap<string> = {
       'Accept': 'application/json',
       'Content-Type': 'application/json;charset=UTF-8'
     };
@@ -60,7 +60,7 @@ export default class HandleStatsGetter {
     });
 
     return Promise.race([executeReq, maxTime])
-      .then((result) => {
+      .then((result:any) => {
         // if (typeof result === 'string' && result.startsWith('Rate limit exceeded'));
         if (result.status !== 200) {
           logger.error(`Error: ${path}, ${result}`);
@@ -69,7 +69,7 @@ export default class HandleStatsGetter {
       })
   }
 
-  async gz(data) {
+  async gz(data:string) {
     const gunzipAsync = util.promisify(zlib.gunzip);
     const buf = Buffer.from(data.slice(3), 'base64');
     const ret = await gunzipAsync(buf);
@@ -79,7 +79,7 @@ export default class HandleStatsGetter {
   async GetPrivateServerToken() {
     const res = await this.req('/auth/signin', 'POST', {
       email: this.config.username,
-      password: this.config.password,
+      password: this.config.privateServerPassword,
     });
     if (res === undefined) return undefined;
     return res.data.token;
@@ -98,13 +98,13 @@ export default class HandleStatsGetter {
     if (res === undefined) return undefined;
     const leaderboard = res.data.list;
     if (leaderboard.length === 0) return { rank: 0, score: 0 };
-    const { rank, score } = leaderboardList.slice(-1)[0];
+    const { rank, score } = leaderboard.slice(-1)[0];
     return { rank, score };
   }
 
   validateConfig() {
     if (!this.config.is_private_server) return true;
-    if (this.config.is_private_server && this.config.username && this.config.password) return true;
+    if (this.config.is_private_server && this.config.username && this.config.privateServerPassword) return true;
     return false;
   }
 
@@ -134,17 +134,16 @@ export default class HandleStatsGetter {
     logger.info(`Reported ${config.username}-${config.shard}-${config.user_id}, ${result}`);
   }
 
-  async Report(stats) {
+  async Report(stats:any) {
     try {
-      const users = await Users.GetUser(this.config.user_id);
-      if (users.length === 0) return undefined;
-      const username = users[0].username;
-      client.write({ screeps: { [username]: { [this.config.shard]: stats } } }, (err) => {
+      const user = await Users.GetUser(this.config.user_id);
+      if (user === undefined) return undefined;
+      client.write({ screeps: { [user.username]: { [this.config.shard]: stats } } }, (err) => {
         if (err) logger.error(err);
       });
       return true;
     } catch (error) {
-      logger.error(err);
+      logger.error(error);
     }
   }
 }

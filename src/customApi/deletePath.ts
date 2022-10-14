@@ -17,7 +17,7 @@ const logger = winston.createLogger({
 
 const base = "/go-carbon-storage";
 
-export default function deletePath(path) {
+export default function deletePath(path:string) {
     if (!path) return { code: 400, message: "Path is required" };
     if (typeof path !== "string") return { code: 400, message: "Path must be a string" };
 

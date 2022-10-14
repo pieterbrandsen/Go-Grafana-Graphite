@@ -19,16 +19,12 @@ function SortByNextUpdate(configs) {
     });
 }
 
-export default async function SyncConfigs(configs) {
+export default async function SyncConfigs(configs:Config[]):Promise<Config[]> {
     const dbConfigs = await Configs.GetConfigs();
     const newConfigs = lodash.differenceBy(dbConfigs, configs, 'config_id');
     const deletedConfigs = lodash.differenceBy(configs, dbConfigs, 'config_id');
 
     for (const config of newConfigs) {
-        config.interval = 60000
-        config.username = "W1N1"
-        config.password = "password"
-        config.shard = "shard0"
         configs.push(config);
     }
     for (const config of deletedConfigs) {

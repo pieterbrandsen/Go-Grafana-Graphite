@@ -1,13 +1,13 @@
 import "./postgres/init.js";
 import { CronJob } from 'cron';
 import SyncConfigs, { UpdateConfigUpdateTime } from "./updater/sync.js";
-const configs = await SyncConfigs([]);
+let configs: Config[] = [];
 import HandleStatsGetter from "./updater/handleStatsGetter.js";
 
 new CronJob(
     '*/5 * * * *',
-    () => {
-        SyncConfigs(configs);
+    async () => {
+        configs = await SyncConfigs(configs);
     }
 ).start();
 
@@ -23,6 +23,11 @@ new CronJob(
         };
     }
 ).start();
+
+async function Start() {
+    configs = await SyncConfigs([]);
+}
+Start();
 
 setInterval(function() {
     console.log("Configs: " + configs.length);

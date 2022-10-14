@@ -23,5 +23,12 @@
     "url": "https://github.com/pieterbrandsen/Go-Grafana-Graphite/issues"
   },
   "homepage": "https://github.com/pieterbrandsen/Go-Grafana-Graphite#readme",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/cron": "^2.0.0",
+    "@types/graphite": "^0.1.0",
+    "@types/lodash": "^4.14.186",
+    "@types/node": "^18.8.5",
+    "@types/pg": "^8.6.5"
+  }
 }

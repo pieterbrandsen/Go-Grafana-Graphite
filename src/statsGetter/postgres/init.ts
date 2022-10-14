@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS configs (
     FOREIGN KEY (user_id)
         REFERENCES users (user_id),
     config_name VARCHAR (255) NOT NULL,
-    interval INT,
+    interval INT NOT NULL,
     host VARCHAR (255),
     port INT,
-    prefix VARCHAR (255),
+    shard VARCHAR (255),
     stats_path VARCHAR (255),
     stats_segment VARCHAR (255),
     token VARCHAR (255) NOT NULL,
-    privateServerUsername VARCHAR (255),
+    username VARCHAR (255) NOT NULL,
     privateServerPassword VARCHAR (255),
     is_private_server BOOLEAN NOT NULL,
     is_stats_segment BOOLEAN NOT NULL
