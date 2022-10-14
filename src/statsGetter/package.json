@@ -14,7 +14,9 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup -c",
-    "start": "node dist/index.cjs"
+    "start": "node dist/index.cjs",
+    "lint": "eslint **/*",
+    "lint-fix": "eslint **/* --fix"
   },
   "repository": {
     "type": "git",
@@ -36,7 +38,14 @@
     "@types/lodash": "^4.14.186",
     "@types/node": "^18.8.5",
     "@types/pg": "^8.6.5",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.1.0",
     "rollup-plugin-clear": "^2.0.7",
-    "rollup-plugin-typescript2": "^0.34.1"
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^4.8.4"
   }
 }

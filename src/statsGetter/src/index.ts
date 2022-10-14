@@ -1,36 +1,38 @@
-import "./postgres/init.js";
-import { CronJob } from 'cron';
-import SyncConfigs, { UpdateConfigUpdateTime } from "./updater/sync.js";
-let configs: Config[] = [];
-import HandleStatsGetter from "./updater/handleStatsGetter.js";
+import './postgres/init.js'
+import { CronJob } from 'cron'
+import SyncConfigs, { UpdateConfigUpdateTime } from './updater/sync.js'
+import HandleStatsGetter from './updater/handleStatsGetter.js'
+import path from 'path'
+let configs: Config[] = []
+global.__dirname = path.resolve('./')
 
 new CronJob(
-    '*/5 * * * *',
-    async () => {
-        configs = await SyncConfigs(configs);
-    }
-).start();
+  '*/5 * * * *',
+  async () => {
+    configs = await SyncConfigs(configs)
+  }
+).start()
 
 new CronJob(
-    '*/5 * * * * *',
-    () => {
-        if (configs.length === 0 || !configs[0].nextUpdate) {
-            return;
-        }
-
-        while ((configs[0].nextUpdate || Infinity) < new Date().getTime()) {
-            const config = configs[0];
-            new HandleStatsGetter(config).Start();
-            configs = UpdateConfigUpdateTime(configs, config);
-        };
+  '*/5 * * * * *',
+  () => {
+    if (configs.length === 0) {
+      return
     }
-).start();
 
-async function Start() {
-    configs = await SyncConfigs([]);
+    while (configs[0].nextUpdate < new Date().getTime()) {
+      const config = configs[0]
+      new HandleStatsGetter(config).Start()
+      configs = UpdateConfigUpdateTime(configs, config)
+    };
+  }
+).start()
+
+async function Start (): Promise<void> {
+  configs = await SyncConfigs([])
 }
-Start();
+Start()
 
-setInterval(function() {
-    console.log("Configs: " + configs.length);
-}, 1000 * 60 * 60);
+setInterval(function () {
+  console.log(`Configs: ${configs.length}`)
+}, 1000 * 60 * 60)

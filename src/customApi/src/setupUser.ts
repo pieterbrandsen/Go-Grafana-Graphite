@@ -1,11 +1,21 @@
-import axios, { AxiosBasicCredentials } from 'axios';
-import winston from 'winston';
-import fs from 'fs';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import axios, { AxiosBasicCredentials } from 'axios'
+import winston from 'winston'
+import fs from 'fs'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const _filename = fileURLToPath(import.meta.url)
+const _dirname = dirname(_filename)
+
+if (process.env.GRAFANA_URL === undefined) {
+  process.env.GRAFANA_URL = 'http://localhost:3000'
+}
+if (process.env.GRAFANA_USER === undefined) {
+  process.env.GRAFANA_USER = 'admin'
+}
+if (process.env.GRAFANA_PASSWORD === undefined) {
+  process.env.GRAFANA_PASSWORD = 'admin'
+}
 
 const logger = winston.createLogger({
   level: 'info',
@@ -14,133 +24,132 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new winston.transports.File({ filename: 'logs/setupUser.log' }),
     new winston.transports.Console({
-        format: winston.format.simple(),
-      })
-  ],
-});
+      format: winston.format.simple()
+    })
+  ]
+})
 
-
-const grafanaApiUrl = process.env.GRAFANA_URL+"/api";
-const adminLogin:AxiosBasicCredentials = {
-    username: process.env.GRAFANA_USER || "admin",
-    password: process.env.GRAFANA_PASSWORD || "admin"
+const grafanaApiUrl = process.env.GRAFANA_URL + '/api'
+const adminLogin: AxiosBasicCredentials = {
+  username: process.env.GRAFANA_USER,
+  password: process.env.GRAFANA_PASSWORD
 }
 
-async function GetOrg(name:string) {
-    try {
-        const result = await axios({
-            url: `${grafanaApiUrl}/orgs/name/${name}`,
-            method: 'get',
-            auth: adminLogin,
-        });
-        return result.data;
-    } catch (err:any) {
-        logger.error(`GetOrg error! ${JSON.stringify(err)}`);
-        return err.response;
-    }
+async function GetOrg (name: string): Promise<any> {
+  try {
+    const result = await axios({
+      url: `${grafanaApiUrl}/orgs/name/${name}`,
+      method: 'get',
+      auth: adminLogin
+    })
+    return result.data
+  } catch (err: any) {
+    logger.error(`GetOrg error! ${JSON.stringify(err)}`)
+    return err.response
+  }
 }
 
-async function CreateUser(config:Config) {
-    try {
-        const result = await axios({
-            url: `${grafanaApiUrl}/admin/users`,
-            method: 'post',
-            auth: adminLogin,
-            data: {
-                name: config.username,
-                email: config.email,
-                login: config.username,
-                password: config.password,
-                orgId:undefined
-            }
-        });
-        return result.data;
-    } catch (err:any) {
-        return err.response;
-    }
-}
-
-async function SwitchToOrg(orgId:number,userLogin:AxiosBasicCredentials) {
-    try {
-        const result = await axios({
-            url: `${grafanaApiUrl}/user/using/${orgId}`,
-            method: 'post',
-            auth: userLogin,
-        });
-        return result.data;
-    } catch (err:any) {
-        logger.error(`SwitchToOrg error! ${JSON.stringify(err)}`);
-        return err.response;
-    }
-}
-
-async function CreateDatasource(userLogin:AxiosBasicCredentials) {
-    try {
-        const result = await axios({
-            url: `${grafanaApiUrl}/datasources`,
-            method: 'post',
-            auth: userLogin,
-            data: {
-                name: 'Graphite',
-                type: 'graphite',
-                url: 'http://gateway:8181',
-                access: 'proxy',
-                isDefault: true,
-                jsonData: {
-                    graphiteVersion: '1.1',
-                    graphiteType: "default",
-                    keepCookies: ["grafana_session"]
-                }
-              },
-        });
-        return result.data;
-    } catch (err:any) {
-        logger.error(`CreateDatasource error! ${JSON.stringify(err)}`);
-        return err.response;
-    }
-}
-
-async function CreateDashboard(userLogin:AxiosBasicCredentials) {
-    try {
-        const dashboard = fs.readFileSync(`${__dirname}/dashboard.json`, 'utf8');
-        console.log(dashboard);
-        const result = await axios({
-            url: `${grafanaApiUrl}/dashboards/db`,
-            method: 'post',
-            auth: userLogin,
-            data: {dashboard: JSON.parse(dashboard)},
-        });
-        return result.data;
-    } catch (err:any) {
-        logger.error(`CreateDashboard error! ${JSON.stringify(err)}`);
-        return err.response;
-    }
-}
-
-export default async function SetupUser(config:Config) {
-    config.username = config.username.toLowerCase();
-    config.email = `${config.username}@${config.username}.com`;
-
-    const userLogin:AxiosBasicCredentials = {
-        username: config.username,
+async function CreateUser (config: Config): Promise<any> {
+  try {
+    const result = await axios({
+      url: `${grafanaApiUrl}/admin/users`,
+      method: 'post',
+      auth: adminLogin,
+      data: {
+        name: config.username,
+        email: config.email,
+        login: config.username,
         password: config.password,
-    }
+        orgId: undefined
+      }
+    })
+    return result.data
+  } catch (err: any) {
+    return err.response
+  }
+}
 
-    const user = await CreateUser(config);
-    if (user.status) return { code: user.status, message: user.data.message };
+async function SwitchToOrg (orgId: number, userLogin: AxiosBasicCredentials): Promise<any> {
+  try {
+    const result = await axios({
+      url: `${grafanaApiUrl}/user/using/${orgId}`,
+      method: 'post',
+      auth: userLogin
+    })
+    return result.data
+  } catch (err: any) {
+    logger.error(`SwitchToOrg error! ${JSON.stringify(err)}`)
+    return err.response
+  }
+}
 
-    const org = await GetOrg(config.email);
-    if (org.status) return { code: org.status, message: org.data.message };
-    const orgId = org.id;    
+async function CreateDatasource (userLogin: AxiosBasicCredentials): Promise<any> {
+  try {
+    const result = await axios({
+      url: `${grafanaApiUrl}/datasources`,
+      method: 'post',
+      auth: userLogin,
+      data: {
+        name: 'Graphite',
+        type: 'graphite',
+        url: 'http://gateway:8181',
+        access: 'proxy',
+        isDefault: true,
+        jsonData: {
+          graphiteVersion: '1.1',
+          graphiteType: 'default',
+          keepCookies: ['grafana_session']
+        }
+      }
+    })
+    return result.data
+  } catch (err: any) {
+    logger.error(`CreateDatasource error! ${JSON.stringify(err)}`)
+    return err.response
+  }
+}
 
-    const switchToOrg = await SwitchToOrg(orgId, userLogin);
-    if (switchToOrg.status) return { code: switchToOrg.status, message: switchToOrg.data.message };
+async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> {
+  try {
+    const dashboard = fs.readFileSync(`${_dirname}/dashboard.json`, 'utf8')
+    console.log(dashboard)
+    const result = await axios({
+      url: `${grafanaApiUrl}/dashboards/db`,
+      method: 'post',
+      auth: userLogin,
+      data: { dashboard: JSON.parse(dashboard) }
+    })
+    return result.data
+  } catch (err: any) {
+    logger.error(`CreateDashboard error! ${JSON.stringify(err)}`)
+    return err.response
+  }
+}
 
-    const datasource = await CreateDatasource(userLogin);
-    if (datasource.status) return { code: datasource.status, message: datasource.data.message };
+export default async function SetupUser (config: Config): Promise<any> {
+  config.username = config.username.toLowerCase()
+  config.email = `${config.username}@${config.username}.com`
 
-    const dashboard = await CreateDashboard(userLogin);
-    if (dashboard.status !== "success") return { code: dashboard.status, message: dashboard.data.message };
-    
-    return { code: 200, message: "User setup successfully" };
+  const userLogin: AxiosBasicCredentials = {
+    username: config.username,
+    password: config.password
+  }
+
+  const user = await CreateUser(config)
+  if (user.status !== undefined) return { code: user.status, message: user.data.message }
+
+  const org = await GetOrg(config.email)
+  if (org.status !== undefined) return { code: org.status, message: org.data.message }
+  const orgId = org.id
+
+  const switchToOrg = await SwitchToOrg(orgId, userLogin)
+  if (switchToOrg.status !== undefined) return { code: switchToOrg.status, message: switchToOrg.data.message }
+
+  const datasource = await CreateDatasource(userLogin)
+  if (datasource.status !== undefined) return { code: datasource.status, message: datasource.data.message }
+
+  const dashboard = await CreateDashboard(userLogin)
+  if (dashboard.status !== undefined) return { code: dashboard.status, message: dashboard.data.message }
+
+  return { code: 200, message: 'User setup successfully' }
 }

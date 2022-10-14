@@ -19,6 +19,6 @@ interface Config {
     privateServerPassword?: string;
     is_private_server: boolean;
     is_stats_segment: boolean;
-    nextUpdate?: number;
+    nextUpdate: number;
 }
 interface StringMap<T> { [key: string]: T; }

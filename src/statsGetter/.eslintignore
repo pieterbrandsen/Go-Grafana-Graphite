@@ -1,0 +1,10 @@
+dist
+logs
+node_modules
+types.d.ts
+Dockerfile
+rollup.config.js
+tsconfig.json
+.eslintrc.json
+package-lock.json
+package.json

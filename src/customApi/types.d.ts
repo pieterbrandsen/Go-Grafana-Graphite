@@ -5,3 +5,8 @@ interface Config {
     username: string;
     password: string;
 }
+
+interface ApiResponse {
+    code: number;
+    message: string;
+}

@@ -1,4 +1,4 @@
-import PostgresQuery from "./query.js";
+import PostgresQuery from './query.js'
 
 const createUserTable = `
 CREATE TABLE IF NOT EXISTS users (
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS configs (
 );
     `
 
-async function Initialize() {
-    await PostgresQuery(createUserTable);
-    await PostgresQuery(createConfigTable);
+function Initialize (): void {
+  PostgresQuery(createUserTable)
+  PostgresQuery(createConfigTable)
 }
-Initialize();
+Initialize()
