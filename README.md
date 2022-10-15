@@ -97,7 +97,15 @@ Its advised to change the password after login.
 
 If you would like you can update the configuration files in the config folder. The configuration files are based on the default configuration files from the projects.
 
-There are 2 telemetry dashboards included in `config/dashboards`. You can import them in Grafana when hosting it.
+There are 3 telemetry dashboards included in `config/dashboards`. You can import them in Grafana when hosting it.
+
+### ServerStats
+
+I have made an mod for collecting [ServerStats](https://github.com/The-International-Screeps-Bot/screepsmod-server-stats).
+
+If you have installed this mod on your server extra api endpoints will become available.
+
+To use this enable `IncludeServerStats` in the config which collects private server stats. There is an pre created dashboard at `exampleStats/serverStats`.
 
 ## Get support
 
