@@ -23,8 +23,6 @@ services:
       - grafana
   stats-getter:
     build: src/statsGetter
-    ports:
-      - "8001:8000"
     volumes:
       - ./logs/statsGetter:/app/logs
     networks:
