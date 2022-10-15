@@ -20,12 +20,18 @@ Memory.stats = {
 }
 
 Object.entries(Game.rooms).forEach(([name, room]) => {
-    Memory.stats.rooms[name] = {
-        controller: room.controller,
+    if (room.controller && room.controller.my) {
+        Memory.stats.rooms[name] = {
+          controller: {
+            level: room.controller.level,
+            progress: room.controller.progress,
+            progressTotal: room.controller.progressTotal,
+          },
         energyAvailable: room.energyAvailable,
         energyCapacityAvailable: room.energyCapacityAvailable,
         energyInStorage: room.storage ? room.storage.store.energy : 0,
         energyInTerminal: room.terminal ? room.terminal.store.energy : 0,
     }
+}
 })
 
