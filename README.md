@@ -1,5 +1,7 @@
 # Go-Grafana-Graphite
 
+![MainWebsiteAlive](https://api.checklyhq.com/v1/badges/checks/3046095f-60de-4694-b807-871f973c6e44?style=flat&theme=dark)
+
 This is the repo to start an high performant Grafana + Graphite stack with Docker.
 
 Don't forget to place an nice star on this repo if you like it.
@@ -108,5 +110,7 @@ If you have installed this mod on your server extra api endpoints will become av
 To use this enable `IncludeServerStats` in the config which collects private server stats. There is an pre created dashboard at `exampleStats/serverStats`.
 
 ## Get support
+
+Get uptime of last 7 days on [Checkly](https://screeps.checklyhq.com/)
 
 Add an issue on github or contact me on `Discord` (PANDA#7722)
