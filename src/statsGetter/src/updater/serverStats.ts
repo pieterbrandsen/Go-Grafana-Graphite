@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 import winston from 'winston'
 
 const logger = winston.createLogger({
@@ -21,7 +22,7 @@ function objectFilter (obj: any, predicate: any): any {
   )
 }
 
-function groupObjectByKey (object: any, key: any) {
+function groupObjectByKey (object: any, key: any): any {
   return Object.entries(object).reduce((hash: any, obj: any) => {
     if (obj[1][key] === undefined) return hash
     // return Object.assign(hash, { [obj[1][key]]: (hash[obj[1][key]] || {}).concat(obj) })
@@ -34,7 +35,7 @@ function groupObjectByKey (object: any, key: any) {
   }, {})
 }
 
-function HandleRoomStats (stats: any, objects: any) {
+function HandleRoomStats (stats: any, objects: any): any {
   stats.structureCounts = {
     spawn: 0,
     extension: 0,
@@ -261,7 +262,7 @@ function modifyRoomObjects (roomObjects: StringMap<any>): any {
   return updatedObjects
 }
 
-export default function ConvertServerStats (unfilteredUsers: any, unfilteredRoomObjects: any) {
+export default function ConvertServerStats (unfilteredUsers: any, unfilteredRoomObjects: any): any {
   if (unfilteredUsers === undefined || unfilteredRoomObjects === undefined) return
   try {
     const unfilteredActiveUsers = unfilteredUsers.filter((u: any) => u.active === 10000)

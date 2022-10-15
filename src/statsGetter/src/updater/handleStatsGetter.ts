@@ -172,8 +172,8 @@ export default class HandleStatsGetter {
     try {
       const user = await Users.GetUser(this.config.user_id)
       if (user === undefined) return undefined
-      const host = (this.config.host ?? "").replace(/\./g, '_')
-      client.write({ screeps: { [user.username]: { stats: {[this.config.shard]: { [this.config.prefix]: stats }},serverStats: {[host]:serverStats} } } }, (err: any) => {
+      const host = (this.config.host ?? '').replace(/\./g, '_')
+      client.write({ screeps: { [user.username]: { stats: { [this.config.shard]: { [this.config.prefix]: stats } }, serverStats: { [host]: serverStats } } } }, (err: any) => {
         if (err !== undefined) logger.error(err)
       })
       return true
