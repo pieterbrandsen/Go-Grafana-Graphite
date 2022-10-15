@@ -67,9 +67,9 @@ export class Users {
     return res[0]
   }
 
-  static async DeleteUser (user: User): Promise<User> {
+  static async DeleteUser (userId: number): Promise<User> {
     const query = `
-        DELETE FROM users WHERE user_id = ${user.user_id};
+        DELETE FROM users WHERE user_id = ${userId};
         `
     const res = await Query<User>(query)
     return res[0]
@@ -113,9 +113,9 @@ export class Configs {
     return res[0]
   }
 
-  static async DeleteConfig (config: Config): Promise<Config> {
+  static async DeleteConfig (configId: number): Promise<Config> {
     const query = `
-        DELETE FROM configs WHERE config_id = ${config.config_id};
+        DELETE FROM configs WHERE config_id = ${configId};
         `
     const res = await Query<Config>(query)
     return res[0]

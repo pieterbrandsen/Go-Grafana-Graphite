@@ -39,7 +39,7 @@ export default async function SyncConfigs (
     }
   }
   logger.info(
-    `Synced configs. New configs: ${newConfigs.length}, deleted configs: ${deletedConfigs.length}`
+    `Synced configs. New configs: ${newConfigs.length}, deleted configs: ${deletedConfigs.length}, total configs ${configs.length}`
   )
   return SortByNextUpdate(configs)
 }

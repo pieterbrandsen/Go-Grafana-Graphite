@@ -28,23 +28,23 @@ new CronJob('*/5 * * * * *', () => {
 async function Start (): Promise<void> {
   const users = await Users.GetUsers()
   if (users.length === 0) {
-    await Users.CreateUser({
+    const user = await Users.CreateUser({
       username: 'admin',
       password: 'admin'
     })
 
     await Configs.CreateConfig({
       config_name: 'localhost',
-      interval: 6000,
+      interval: 60000,
       is_private_server: true,
       is_stats_segment: false,
       shard: 'performanceServer',
       stats_path: 'stats',
-      user_id: 1,
+      user_id: user.user_id as number,
       username: 'W1N1',
-      host: 'localhost',
+      host: 'host.docker.internal',
       port: 21025,
-      prefix: 'prefix',
+      prefix: '',
       private_server_password: 'password',
       nextUpdate: -1
     })
