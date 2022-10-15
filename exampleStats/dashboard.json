@@ -96,7 +96,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.gcl.level"
+            "target": "screeps.stats.*.gcl.level"
           }
         ],
         "title": "GCL Level",
@@ -183,7 +183,7 @@
               "uid": "P1D261A8554D2DA69"
             },
             "refId": "A",
-            "target": "aliasByNode(screeps.*.stats.*.cpu.bucket, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.cpu.bucket, 2, 4)"
           }
         ],
         "title": "Cpu Bucket",
@@ -287,7 +287,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "aliasByNode(screeps.*.stats.*.cpu.usage, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.cpu.usage, 2, 4)"
           },
           {
             "datasource": {
@@ -297,7 +297,7 @@
             "hide": false,
             "refCount": 0,
             "refId": "B",
-            "target": "aliasByNode(screeps.*.stats.*.cpu.limit, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.cpu.limit, 2, 4)"
           }
         ],
         "title": "Cpu Usage",
@@ -360,7 +360,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.leaderboard.rank"
+            "target": "screeps.stats.*.leaderboard.rank"
           }
         ],
         "title": "Leaderboard",
@@ -423,7 +423,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.gpl.level"
+            "target": "screeps.stats.*.gpl.level"
           }
         ],
         "title": "GPL Level",
@@ -486,7 +486,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.roomCount"
+            "target": "screeps.stats.*.roomCount"
           }
         ],
         "title": "Room count",
@@ -549,7 +549,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.creepCount"
+            "target": "screeps.stats.*.creepCount"
           }
         ],
         "title": "Creep count",
@@ -612,7 +612,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.spawnCount"
+            "target": "screeps.stats.*.spawnCount"
           }
         ],
         "title": "Spawn count",
@@ -675,7 +675,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.constructionSiteCount"
+            "target": "screeps.stats.*.constructionSiteCount"
           }
         ],
         "title": "Construction count",
@@ -738,7 +738,7 @@
             },
             "refCount": 0,
             "refId": "A",
-            "target": "screeps.*.stats.*.flagCount"
+            "target": "screeps.stats.*.flagCount"
           }
         ],
         "title": "Flag count",
@@ -813,7 +813,7 @@
               "uid": "P1D261A8554D2DA69"
             },
             "refId": "A",
-            "target": "screeps.*.stats.*.rooms.*.controller.level"
+            "target": "screeps.stats.*.rooms.*.controller.level"
           }
         ],
         "title": "RCL level",
@@ -900,7 +900,7 @@
               "uid": "P1D261A8554D2DA69"
             },
             "refId": "A",
-            "target": "aliasByNode(screeps.*.stats.*.rooms.*.energyInStorage, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.rooms.*.energyInStorage, 2, 4)"
           }
         ],
         "title": "Storage",
@@ -987,7 +987,7 @@
               "uid": "P1D261A8554D2DA69"
             },
             "refId": "A",
-            "target": "aliasByNode(screeps.*.stats.*.rooms.*.energyInTerminal, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.rooms.*.energyInTerminal, 2, 4)"
           }
         ],
         "title": "Terminal",
@@ -1074,7 +1074,7 @@
               "uid": "P1D261A8554D2DA69"
             },
             "refId": "A",
-            "target": "aliasByNode(screeps.*.stats.*.rooms.*.energyAvailable, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.rooms.*.energyAvailable, 2, 4)"
           }
         ],
         "title": "Energy available",
@@ -1161,7 +1161,7 @@
               "uid": "P1D261A8554D2DA69"
             },
             "refId": "A",
-            "target": "aliasByNode(screeps.*.stats.*.rooms.*.energyCapacityAvailable, 2, 4)"
+            "target": "aliasByNode(screeps.stats.*.rooms.*.energyCapacityAvailable, 2, 4)"
           }
         ],
         "title": "Energy capacity",

@@ -125,7 +125,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.level), 4, 6)"
+          "target": "aliasByNode(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.level), 4, 6)"
         }
       ],
       "title": "Controller level",
@@ -218,8 +218,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, #B)), 4, 6)",
-          "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal)), 4, 6)"
+          "target": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, #B)), 4, 6)",
+          "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal)), 4, 6)"
         },
         {
           "datasource": {
@@ -229,7 +229,7 @@
           "hide": true,
           "refCount": -1,
           "refId": "B",
-          "target": "screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal"
+          "target": "screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal"
         }
       ],
       "title": "Controller percentage",
@@ -323,7 +323,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepCounts), 'sum', 4)"
+          "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepCounts), 'sum', 4)"
         }
       ],
       "title": "Total creeps",
@@ -410,7 +410,7 @@
             "uid": "P1D261A8554D2DA69"
           },
           "refId": "A",
-          "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureCounts.*), 'sum', 4, 7)"
+          "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureCounts.*), 'sum', 4, 7)"
         }
       ],
       "title": "Total structures",
@@ -500,8 +500,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), #B)), 0, 1)",
-          "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6))), 0, 1)"
+          "target": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), #B)), 0, 1)",
+          "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6))), 0, 1)"
         },
         {
           "datasource": {
@@ -511,7 +511,7 @@
           "hide": true,
           "refCount": -1,
           "refId": "B",
-          "target": "groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6)"
+          "target": "groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6)"
         }
       ],
       "title": "CS Total progress %",
@@ -603,7 +603,7 @@
           },
           "refCount": 0,
           "refId": "A",
-          "target": "groupByNodes(removeZeroSeries(movingAverage(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureStore.{extension,spawn}.energy, 10)), 'sum', 4, 6)",
+          "target": "groupByNodes(removeZeroSeries(movingAverage(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureStore.{extension,spawn}.energy, 10)), 'sum', 4, 6)",
           "textEditor": false
         }
       ],
@@ -708,7 +708,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.user.lastUsedCpu), 4)"
+              "target": "aliasByNode(removeZeroSeries(screeps.serverStats.$Hosts.$Users.user.lastUsedCpu), 4)"
             }
           ],
           "title": "Cpu usage",
@@ -796,7 +796,7 @@
                 "uid": "ubyRYuR4z"
               },
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.user.gcl), 4)"
+              "target": "aliasByNode(removeZeroSeries(screeps.serverStats.$Hosts.$Users.user.gcl), 4)"
             }
           ],
           "title": "GCL",
@@ -884,7 +884,7 @@
                 "uid": "ubyRYuR4z"
               },
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.user.cpuAvailable), 4)"
+              "target": "aliasByNode(removeZeroSeries(screeps.serverStats.$Hosts.$Users.user.cpuAvailable), 4)"
             }
           ],
           "title": "CPU bucket",
@@ -988,7 +988,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.level), 4, 6)"
+              "target": "aliasByNode(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.level), 4, 6)"
             }
           ],
           "title": "Controller level",
@@ -1081,8 +1081,8 @@
               "hide": false,
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, #B)), 4, 6)",
-              "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal)), 4, 6)"
+              "target": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, #B)), 4, 6)",
+              "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progress, screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal)), 4, 6)"
             },
             {
               "datasource": {
@@ -1092,7 +1092,7 @@
               "hide": true,
               "refCount": -1,
               "refId": "B",
-              "target": "screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal"
+              "target": "screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.controller.progressTotal"
             }
           ],
           "title": "Controller percentage",
@@ -1200,7 +1200,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(movingAverage(groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepStore.energy, 'sum', 4, 6), 5)), 0, 1)"
+              "target": "aliasByNode(removeZeroSeries(movingAverage(groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepStore.energy, 'sum', 4, 6), 5)), 0, 1)"
             }
           ],
           "title": "Energy in creeps",
@@ -1293,7 +1293,7 @@
                 "uid": "P1D261A8554D2DA69"
               },
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepCounts), 'sum', 4, 7)"
+              "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepCounts), 'sum', 4, 7)"
             }
           ],
           "title": "Total creeps",
@@ -1386,7 +1386,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(movingAverage(groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepBodies.*, 'sum', 4, 6), 5)), 0, 1)"
+              "target": "aliasByNode(removeZeroSeries(movingAverage(groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepBodies.*, 'sum', 4, 6), 5)), 0, 1)"
             }
           ],
           "title": "Total parts",
@@ -1455,7 +1455,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepBodies.*), 'sum', 8), 0)"
+              "target": "aliasByNode(groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.creepBodies.*), 'sum', 8), 0)"
             }
           ],
           "title": "Total parts per type",
@@ -1561,7 +1561,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(movingAverage(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureStore.{extension,spawn}.energy, 5)), 'sum', 4, 6)"
+              "target": "groupByNodes(removeZeroSeries(movingAverage(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureStore.{extension,spawn}.energy, 5)), 'sum', 4, 6)"
             }
           ],
           "title": "Energy in Spawn & Extensions",
@@ -1648,7 +1648,7 @@
                 "uid": "P1D261A8554D2DA69"
               },
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureCounts.*), 'sum', 4, 6)"
+              "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureCounts.*), 'sum', 4, 6)"
             }
           ],
           "title": "Total structures",
@@ -1741,7 +1741,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(movingAverage(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureStore.container.energy, 5)), 'sum', 4)"
+              "target": "groupByNodes(removeZeroSeries(movingAverage(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureStore.container.energy, 5)), 'sum', 4)"
             }
           ],
           "title": "Energy in container",
@@ -1809,7 +1809,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureCounts.*), 'sum', 8)"
+              "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.structureCounts.*), 'sum', 8)"
             }
           ],
           "title": "Total structures per type",
@@ -1913,8 +1913,8 @@
               "hide": false,
               "refCount": 0,
               "refId": "A",
-              "target": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), #B)), 0, 1)",
-              "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6))), 0, 1)"
+              "target": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), #B)), 0, 1)",
+              "targetFull": "aliasByNode(removeZeroSeries(divideSeriesLists(groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.progress, 'sum', 4, 6), groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6))), 0, 1)"
             },
             {
               "datasource": {
@@ -1924,7 +1924,7 @@
               "hide": true,
               "refCount": -1,
               "refId": "B",
-              "target": "groupByNodes(screeps.*.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6)"
+              "target": "groupByNodes(screeps.serverStats.$Hosts.$Users.$RoomType.$Rooms.constructionSites.total, 'sum', 4, 6)"
             }
           ],
           "title": "Total progress %",
@@ -2027,7 +2027,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Rooms.$RoomType.$Rooms.droppedEnergy), 'sum', 4, 6)"
+              "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Rooms.$RoomType.$Rooms.droppedEnergy), 'sum', 4, 6)"
             }
           ],
           "title": "Energy on ground",
@@ -2130,7 +2130,7 @@
               },
               "refCount": 0,
               "refId": "A",
-              "target": "groupByNodes(removeZeroSeries(screeps.*.serverStats.$Hosts.$Rooms.$RoomType.$Rooms.mineralAmount), 'sum', 4, 6)"
+              "target": "groupByNodes(removeZeroSeries(screeps.serverStats.$Hosts.$Rooms.$RoomType.$Rooms.mineralAmount), 'sum', 4, 6)"
             }
           ],
           "title": "Mineral amount",
@@ -2158,13 +2158,13 @@
           "type": "graphite",
           "uid": "P1D261A8554D2DA69"
         },
-        "definition": "screeps.*.serverStats.*",
+        "definition": "screeps.serverStats.*",
         "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "Hosts",
         "options": [],
-        "query": "screeps.*.serverStats.*",
+        "query": "screeps.serverStats.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2185,13 +2185,13 @@
           "type": "graphite",
           "uid": "P1D261A8554D2DA69"
         },
-        "definition": "screeps.*.serverStats.$Hosts.*",
+        "definition": "screeps.serverStats.$Hosts.*",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "Users",
         "options": [],
-        "query": "screeps.*.serverStats.$Hosts.*",
+        "query": "screeps.serverStats.$Hosts.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2212,13 +2212,13 @@
           "type": "graphite",
           "uid": "P1D261A8554D2DA69"
         },
-        "definition": "screeps.*.serverStats.$Hosts.$Users.$RoomType.*",
+        "definition": "screeps.serverStats.$Hosts.$Users.$RoomType.*",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "Rooms",
         "options": [],
-        "query": "screeps.*.serverStats.$Hosts.$Users.$RoomType.*",
+        "query": "screeps.serverStats.$Hosts.$Users.$RoomType.*",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
