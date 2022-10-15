@@ -13,7 +13,6 @@ new CronJob('*/5 * * * * *', async () => {
 }).start()
 
 new CronJob('*/5 * * * * *', () => {
-  // new CronJob("*/5 * * * * *", () => {
   if (configs.length === 0) {
     return
   }
@@ -54,5 +53,4 @@ async function Start (): Promise<void> {
 
 setInterval(function () {
   Start()
-// }, 60000)
-}, 1000)
+}, 60000)
