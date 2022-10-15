@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { Configs } from '../postgres/query.js'
+import { Configs } from '../postgres/query'
 import winston from 'winston'
 
 const logger = winston.createLogger({
@@ -7,6 +7,7 @@ const logger = winston.createLogger({
   format: winston.format.json(),
   transports: [
     new winston.transports.File({ filename: 'logs/sync.log' }),
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new winston.transports.Console({
       format: winston.format.simple()
     })

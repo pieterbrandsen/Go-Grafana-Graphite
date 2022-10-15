@@ -1,4 +1,4 @@
-import PostgresQuery from './query.js'
+import PostgresQuery from './query'
 
 const createUserTable = `
 CREATE TABLE IF NOT EXISTS users (
@@ -16,14 +16,15 @@ CREATE TABLE IF NOT EXISTS configs (
     host VARCHAR (255),
     port INT,
     shard VARCHAR (255),
-    prefix VARCHAR (255),
+    prefix VARCHAR (255) NOT NULL,
     stats_path VARCHAR (255),
     stats_segment VARCHAR (255),
     token VARCHAR (255) NOT NULL,
     username VARCHAR (255) NOT NULL,
     private_server_password VARCHAR (255),
     is_private_server BOOLEAN NOT NULL,
-    is_stats_segment BOOLEAN NOT NULL
+    is_stats_segment BOOLEAN NOT NULL,
+    include_server_stats BOOLEAN NOT NULL
 );
     `
 

@@ -1,4 +1,4 @@
-import GetPool from './pool.js'
+import GetPool from './pool'
 import winston from 'winston'
 
 const logger = winston.createLogger({
@@ -97,8 +97,8 @@ export class Configs {
 
   static async CreateConfig (config: Config): Promise<Config> {
     const query = `
-        INSERT INTO configs (user_id, config_name, interval, host, port, prefix, stats_path, stats_segment, shard, token, username, private_server_password, is_private_server, is_stats_segment)
-        VALUES (${config.user_id}, '${config.config_name}', ${config.interval}, '${config.host}', ${config.port}, '${config.prefix}', '${config.stats_path}', '${config.stats_segment}', '${config.shard}', '${config.token}', '${config.username}', '${config.private_server_password}', ${config.is_private_server}, ${config.is_stats_segment})
+        INSERT INTO configs (user_id, config_name, interval, host, port, prefix, stats_path, stats_segment, shard, token, username, private_server_password, is_private_server, is_stats_segment, include_server_stats)
+        VALUES (${config.user_id}, '${config.config_name}', ${config.interval}, '${config.host}', ${config.port}, '${config.prefix}', '${config.stats_path}', '${config.stats_segment}', '${config.shard}', '${config.token}', '${config.username}', '${config.private_server_password}', ${config.is_private_server}, ${config.is_stats_segment}, ${config.include_server_stats})
         RETURNING *;
         `
     const res = await Query<Config>(query)
@@ -107,7 +107,7 @@ export class Configs {
 
   static async UpdateConfig (config: Config): Promise<Config> {
     const query = `
-        UPDATE configs SET user_id = ${config.user_id}, config_name = '${config.config_name}', interval = ${config.interval}, host = '${config.host}', port = ${config.port}, prefix = '${config.prefix}', stats_path = '${config.stats_path}', stats_segment = '${config.stats_segment}', shard = '${config.shard}', token = '${config.token}', username = '${config.username}', private_server_password = '${config.private_server_password}', is_private_server = ${config.is_private_server}, is_stats_segment = ${config.is_stats_segment} WHERE config_id = ${config.config_id};
+        UPDATE configs SET user_id = ${config.user_id}, config_name = '${config.config_name}', interval = ${config.interval}, host = '${config.host}', port = ${config.port}, prefix = '${config.prefix}', stats_path = '${config.stats_path}', stats_segment = '${config.stats_segment}', shard = '${config.shard}', token = '${config.token}', username = '${config.username}', private_server_password = '${config.private_server_password}', is_private_server = ${config.is_private_server}, is_stats_segment = ${config.is_stats_segment}, include_server_stats = ${config.include_server_stats} WHERE config_id = ${config.config_id};
         `
     const res = await Query<Config>(query)
     return res[0]

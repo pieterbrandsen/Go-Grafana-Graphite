@@ -1,7 +1,7 @@
 import './postgres/init.js'
 import { CronJob } from 'cron'
-import SyncConfigs, { UpdateConfigUpdateTime } from './updater/sync.js'
-import HandleStatsGetter from './updater/handleStatsGetter.js'
+import SyncConfigs, { UpdateConfigUpdateTime } from './updater/sync'
+import HandleStatsGetter from './updater/handleStatsGetter'
 import path from 'path'
 
 import { Configs, Users } from './postgres/query'
@@ -46,11 +46,13 @@ async function Start (): Promise<void> {
       port: 21025,
       prefix: '',
       private_server_password: 'password',
-      nextUpdate: -1
+      nextUpdate: -1,
+      include_server_stats: true
     })
   }
 }
 
 setInterval(function () {
   Start()
+// }, 60000)
 }, 1000)

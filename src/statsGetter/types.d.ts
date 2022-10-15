@@ -10,13 +10,14 @@ interface Config {
     interval: number;
     host?: string;
     port?: number;
-    prefix?: string;
+    prefix: string;
     stats_path?: string;
     stats_segment?: string;
     shard:string;
     token?: string;
     username: string;
     private_server_password?: string;
+    include_server_stats: boolean;
     is_private_server: boolean;
     is_stats_segment: boolean;
     nextUpdate: number;

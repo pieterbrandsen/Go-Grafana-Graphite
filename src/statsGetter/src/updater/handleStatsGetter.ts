@@ -2,8 +2,9 @@ import util from 'util'
 import zlib from 'zlib'
 import axios from 'axios'
 import graphite from 'graphite'
-import { Users } from '../postgres/query.js'
+import { Users } from '../postgres/query'
 import winston from 'winston'
+import ConvertServerStats from './serverStats'
 if (process.env.CARBON_RELAY_NG_URL === undefined) {
   process.env.CARBON_RELAY_NG_URL = 'http://localhost:2003'
 }
@@ -115,9 +116,21 @@ export default class HandleStatsGetter {
     return { rank, score }
   }
 
+  async getUsers (): Promise<any> {
+    const res = await this.req('/stats/users', 'GET')
+    if (res === undefined) return undefined
+    return res
+  }
+
+  async getRoomsObjects (): Promise<any> {
+    const res = await this.req('/stats/rooms/objects', 'GET')
+    if (res === undefined) return undefined
+    return res
+  }
+
   ValidateConfig (): boolean {
     if (!this.config.is_private_server) return true
-    if (this.config.is_private_server && this.config.username !== undefined && this.config.private_server_password !== undefined) return true
+    if (this.config.is_private_server && this.config.username !== undefined && this.config.private_server_password !== undefined && this.config.host !== undefined) return true
     return false
   }
 
@@ -143,16 +156,24 @@ export default class HandleStatsGetter {
       return
     };
     memory.leaderboard = leaderboard
-    const result = await this.Report(memory)
-    logger.info(`Reported ${config.username}-${config.shard}-${config.user_id}, ${result}`)
+
+    let serverStats
+    if (config.include_server_stats) {
+      const users = await this.getUsers()
+      const roomsObjects = await this.getRoomsObjects()
+      if (users !== undefined && roomsObjects !== undefined) serverStats = ConvertServerStats(users.data, roomsObjects.data)
+    }
+
+    const result = await this.Report(memory, serverStats)
+    logger.info(`Reported ${config.username}-${config.shard}-${config.user_id} ${serverStats ? 'with serverStats' : ''}, ${result}`)
   }
 
-  async Report (stats: any): Promise<any> {
+  async Report (stats: any, serverStats: any): Promise<any> {
     try {
       const user = await Users.GetUser(this.config.user_id)
       if (user === undefined) return undefined
-      if (this.config.prefix === undefined) this.config.prefix = ''
-      client.write({ screeps: { [user.username]: { [this.config.shard]: { [this.config.prefix]: stats } } } }, (err: any) => {
+      const host = (this.config.host ?? "").replace(/\./g, '_')
+      client.write({ screeps: { [user.username]: { stats: {[this.config.shard]: { [this.config.prefix]: stats }},serverStats: {[host]:serverStats} } } }, (err: any) => {
         if (err !== undefined) logger.error(err)
       })
       return true
