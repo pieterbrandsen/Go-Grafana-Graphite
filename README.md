@@ -97,9 +97,13 @@ Its advised to change the password after login.
 
 ## Configuration
 
+Most settings are changeable in the `docker-compose.yml` file. Don't forget that some settings can be set at multiple places. There should be no need to change other files expect the `docker-compose.yml` file or `config` folder.
+
 If you would like you can update the configuration files in the config folder. The configuration files are based on the default configuration files from the projects.
 
 There are 3 telemetry dashboards included in `config/dashboards`. You can import them in Grafana when hosting it.
+
+All logs will be exported to the `logs` folder.
 
 ### ServerStats
 
