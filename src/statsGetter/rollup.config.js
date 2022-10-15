@@ -9,7 +9,7 @@ export default {
     output: {
         file: 'dist/index.cjs',
         format: 'cjs',
-        sourcemap: false,
+        sourcemap: true,
     },
 
     plugins: [

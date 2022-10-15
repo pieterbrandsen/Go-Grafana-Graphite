@@ -28,3 +28,4 @@ Object.entries(Game.rooms).forEach(([name, room]) => {
         energyInTerminal: room.terminal ? room.terminal.store.energy : 0,
     }
 })
+

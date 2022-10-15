@@ -112,7 +112,6 @@ async function CreateDatasource (userLogin: AxiosBasicCredentials): Promise<any>
 async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> {
   try {
     const dashboard = fs.readFileSync(`${_dirname}/dashboard.json`, 'utf8')
-    console.log(dashboard)
     const result = await axios({
       url: `${grafanaApiUrl}/dashboards/db`,
       method: 'post',

@@ -9,8 +9,8 @@ export default function GetPool (): postgresql.Pool {
     user: process.env.POSTGRES_USER ?? 'postgres',
     database: process.env.POSTGRES_DB ?? 'postgres',
     password: process.env.POSTGRES_PASSWORD ?? 'postgres',
-    host: 'postgres',
-    port: 5432
+    host: process.env.POSTGRES_HOST ?? 'localhost',
+    port: (process.env.POSTGRES_PORT as unknown as number) ?? 5432
   })
 
   return pool

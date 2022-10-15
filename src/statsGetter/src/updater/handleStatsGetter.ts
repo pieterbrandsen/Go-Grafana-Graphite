@@ -4,7 +4,10 @@ import axios from 'axios'
 import graphite from 'graphite'
 import { Users } from '../postgres/query.js'
 import winston from 'winston'
-const client = graphite.createClient('plaintext://carbon-relay-ng:2003/')
+if (process.env.CARBON_RELAY_NG_URL === undefined) {
+  process.env.CARBON_RELAY_NG_URL = 'http://localhost:2003'
+}
+const client = graphite.createClient(`plaintext://${process.env.CARBON_RELAY_NG_URL.replace('http://', '')}/`)
 
 const logger = winston.createLogger({
   level: 'info',
@@ -54,19 +57,24 @@ export default class HandleStatsGetter {
       try {
         axios.request(options).then((res) => {
           resolve(res)
-        }).catch((err) => {
-          resolve(err)
+        }).catch((error) => {
+          resolve({ error })
         })
       } catch (error) {
-        resolve(error)
+        resolve({ error })
       }
     })
 
     return await Promise.race([executeReq, maxTime])
       .then((result: any) => {
-        // if (typeof result === 'string' && result.startsWith('Rate limit exceeded'));
+        if (result.error !== undefined) {
+          logger.error(`Error: ${path}, ${JSON.stringify(result.error)}`)
+          return undefined
+        }
+
         if (result.status !== 200) {
-          logger.error(`Error: ${path}, ${result}`)
+          logger.error(`Failed: ${path}, ${JSON.stringify(result)}`)
+          return undefined
         }
         return result
       })
@@ -82,7 +90,7 @@ export default class HandleStatsGetter {
   async GetPrivateServerToken (): Promise<any> {
     const res = await this.req('/auth/signin', 'POST', {
       email: this.config.username,
-      password: this.config.privateServerPassword
+      password: this.config.private_server_password
     })
     if (res === undefined) return undefined
     return res.data.token
@@ -109,7 +117,7 @@ export default class HandleStatsGetter {
 
   ValidateConfig (): boolean {
     if (!this.config.is_private_server) return true
-    if (this.config.is_private_server && this.config.username !== undefined && this.config.privateServerPassword !== undefined) return true
+    if (this.config.is_private_server && this.config.username !== undefined && this.config.private_server_password !== undefined) return true
     return false
   }
 
@@ -143,7 +151,8 @@ export default class HandleStatsGetter {
     try {
       const user = await Users.GetUser(this.config.user_id)
       if (user === undefined) return undefined
-      client.write({ screeps: { [user.username]: { [this.config.shard]: stats } } }, (err: any) => {
+      if (this.config.prefix === undefined) this.config.prefix = ''
+      client.write({ screeps: { [user.username]: { [this.config.shard]: { [this.config.prefix]: stats } } } }, (err: any) => {
         if (err !== undefined) logger.error(err)
       })
       return true
