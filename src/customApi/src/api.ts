@@ -4,8 +4,8 @@ import bodyParser from 'body-parser'
 import winston from 'winston'
 import path from 'path'
 
-import deletePath from './deletePath.js'
-import setupUser from './setupUser.js'
+import DeletePath from './deletePath.js'
+import {SetupUserCommand, AddUserToOrgCommand} from './setupUser.js'
 
 global.__dirname = path.resolve('./')
 
@@ -30,7 +30,7 @@ app.post('/deletePath', (req, res) => {
     `${req.ip}, DeletePath called with path: ${req.body.path} by user: ${req.body.username}`
   )
 
-  const result = deletePath(req.body.path)
+  const result = DeletePath(req.body.path)
   logger.info(`${req.body.path}, Result: ${JSON.stringify(result)}`)
   res.status(result.code).send(result.message)
 })
@@ -40,7 +40,20 @@ app.post('/setupUser', async (req, res) => {
       `${req.ip}, SetupUser called with username: ${req.body.username}`
     )
 
-    const result = await setupUser(req.body)
+    const result = await SetupUserCommand(req.body)
+    logger.info(`${req.body.username}, Result: ${JSON.stringify(result)}`)
+    res.status(result.code).send(result.message)
+  } catch (error) {
+    logger.error(`${req.body.username}, Error: ${JSON.stringify(error)}`)
+  }
+})
+app.post('/addUserToOrg',async (req, res) => {
+  try {
+    logger.info(
+      `${req.ip}, AddUserToOrg called with username: ${req.body.username}`
+    )
+
+    const result = await AddUserToOrgCommand(req.body)
     logger.info(`${req.body.username}, Result: ${JSON.stringify(result)}`)
     res.status(result.code).send(result.message)
   } catch (error) {

@@ -1,5 +1,5 @@
 import axios, { AxiosBasicCredentials } from 'axios'
-import winston from 'winston'
+import winston, { configure } from 'winston'
 import fs from 'fs'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -83,6 +83,24 @@ async function SwitchToOrg (orgId: number, userLogin: AxiosBasicCredentials): Pr
   }
 }
 
+async function AddUserToOrg(orgId:number, config:Config, userLogin:AxiosBasicCredentials):Promise<any> {
+  try {
+    const result = await axios({
+      url: `${grafanaApiUrl}/orgs/${orgId}/users`,
+      method: 'post',
+      auth: userLogin,
+      data: {
+        loginOrEmail: config.targetUsername,
+        role: config.role
+      }
+    })
+    return result.data
+  } catch (err: any) {
+    logger.error(`AddUserToOrg error! ${JSON.stringify(err)}`)
+    return err.response
+  }
+}
+
 async function CreateDatasource (userLogin: AxiosBasicCredentials): Promise<any> {
   try {
     const result = await axios({
@@ -125,7 +143,7 @@ async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> 
   }
 }
 
-export default async function SetupUser (config: Config): Promise<any> {
+export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
   config.username = config.username.toLowerCase()
   config.email = `${config.username}@${config.username}.com`
 
@@ -151,4 +169,30 @@ export default async function SetupUser (config: Config): Promise<any> {
   if (dashboard.status !== undefined) return { code: dashboard.status, message: dashboard.data.message }
 
   return { code: 200, message: 'User setup successfully' }
+}
+
+export async function AddUserToOrgCommand(config:Config):Promise<ApiResponse> {
+  if (config.targetUsername === undefined) {
+    return { code: 400, message: 'targetUsername is undefined' }
+  }
+ 
+  config.username = config.username.toLowerCase()
+  config.targetUsername = config.targetUsername.toLowerCase()
+  config.email = `${config.username}@${config.username}.com`
+  const userLogin: AxiosBasicCredentials = {
+    username: config.username,
+    password: config.password
+  }
+
+  const org = await GetOrg(config.email)
+  if (org.status !== undefined) return { code: org.status, message: org.data.message }
+  const orgId = org.id
+
+  const switchToOrg = await SwitchToOrg(orgId, userLogin)
+  if (switchToOrg.status !== undefined) return { code: switchToOrg.status, message: switchToOrg.data.message }
+
+  const addUserToOrg = await AddUserToOrg(orgId, config, userLogin)
+  if (addUserToOrg.status !== undefined) return { code: addUserToOrg.status, message: addUserToOrg.data.message }
+
+  return { code: 200, message: 'User added to org successfully' }
 }

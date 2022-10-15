@@ -4,6 +4,8 @@ interface Config {
     email?: string;
     username: string;
     password: string;
+    targetUsername?: string;
+    role: "Viewer" | "Editor" | "Admin";
 }
 
 interface ApiResponse {
