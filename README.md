@@ -41,7 +41,7 @@ Don't forget to place an nice star on this repo if you like it.
 
 ### Installation
 
-Build docker images
+Paste the following inside the terminal inside project root folder.
 
 > Stats-Gateway image
 
