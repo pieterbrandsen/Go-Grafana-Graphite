@@ -19,10 +19,26 @@
       </a>
     </div>
     <div class="mb-10 text-center">
-      <h3 class="mx-6 mb-2 text-xs text-gray-400 uppercase tracking-widest">Secondary</h3>
+      <h3 class="mx-6 mb-2 text-xs text-gray-400 uppercase tracking-widest">Support</h3>
+      <a
+        v-for="(item, index) in navigation.support"
+        :key="index"
+        :href="item.href" target="_blank"
+        class="flex items-center px-6 py-2.5 text-gray-500 hover:text-orange-600"
+      >
+        {{ item.label }}
+      </a>
     </div>
     <div class="mb-10 text-center">
-      <h3 class="mx-6 mb-2 text-xs text-gray-400 uppercase tracking-widest">Tertiary</h3>
+      <h3 class="mx-6 mb-2 text-xs text-gray-400 uppercase tracking-widest">Grafana</h3>
+      <a
+        v-for="(item, index) in navigation.grafana"
+        :key="index"
+        :href="item.href"
+        class="flex items-center px-6 py-2.5 text-gray-500 hover:text-orange-600"
+      >
+        {{ item.label }}
+      </a>
     </div>
   </div>
 </template>
@@ -38,6 +54,8 @@ interface NavigationItem {
 
 interface Navigation {
   main: NavigationItem[];
+  support: NavigationItem[];
+  grafana: NavigationItem[];
 }
 
 const navigation: Navigation = {
@@ -47,20 +65,45 @@ const navigation: Navigation = {
       href: '/',
     },
     {
-      label: 'About',
-      href: '/about',
+      label: 'Support',
+      href: '/support',
+    },
+  ],
+  support: [
+    {
+      label: 'Server stats',
+      href: 'https://github.com/The-International-Screeps-Bot/screepsmod-server-stats',
     },
     {
-      label: 'Contact',
-      href: '/',
+      label: 'Performance server',
+      href: 'https://github.com/The-International-Screeps-Bot/Screeps-Performance-Server',
+    },
+    {
+      label: 'Simple grafana runner',
+      href: 'https://github.com/The-International-Screeps-Bot/Screeps-Grafana',
+    },
+    {
+      label: 'The International',
+      href: 'https://github.com/The-International-Screeps-Bot/The-International-Open-Source',
+    },
+  ],
+  grafana: [
+    {
+      label: 'Grafana',
+      href: 'http://localhost:3000',
+    },
+    {
+      label: 'Configs',
+      href: '/configs',
+    },
+    {
+      label: 'Support',
+      href: '/support',
     },
   ],
 };
 
 @Options({
-  props: {
-    msg: String,
-  },
   components: {
     ApplicationLogo,
   },
@@ -71,8 +114,6 @@ const navigation: Navigation = {
   },
 })
 export default class Sidebar extends Vue {
-  msg!: string;
-
   ApplicationLogo!: typeof ApplicationLogo;
 
   navigation!: Navigation;
