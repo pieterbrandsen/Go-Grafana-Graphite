@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import ApplicationLogo from '@/components/ApplicationLogo.vue';
+import ApplicationLogo from '@/components/base/ApplicationLogo.vue';
 
 interface NavigationItem {
   label: string;
