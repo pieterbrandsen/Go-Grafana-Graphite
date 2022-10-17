@@ -6,10 +6,10 @@ const logger = winston.createLogger({
   format: winston.format.json(),
   transports: [
     new winston.transports.File({
-      filename: 'logs/queryError.log',
+      filename: 'logs/query/error.log',
       level: 'error'
     }),
-    new winston.transports.File({ filename: 'logs/query.log' })
+    new winston.transports.File({ filename: 'logs/query/combined.log' })
   ]
 })
 
