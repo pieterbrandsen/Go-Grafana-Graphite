@@ -16,9 +16,11 @@ const logger = winston.createLogger({
 
 const base = '/go-carbon-storage'
 
-export default function deletePath (path?: string): ApiResponse {
+export default function deletePath (path?: string, orgName?: string): ApiResponse {
   if (path === undefined) return { code: 400, message: 'Path is required' }
   if (typeof path !== 'string') return { code: 400, message: 'Path must be a string' }
+
+  if (orgName === undefined) return { code: 400, message: 'OrgName is required' }
 
   let fullPath = join(base, path.replace(/\./g, '/'))
   if (!fullPath.startsWith(base)) return { code: 400, message: 'Path must be within base' }
@@ -27,6 +29,9 @@ export default function deletePath (path?: string): ApiResponse {
     if (fs.existsSync(fullPath + '.wsp')) fullPath += '.wsp'
     else return { code: 404, message: 'Path does not exist' }
   };
+
+  if (!fullPath.startsWith(join(base, "/screeps/",orgName))) return { code: 400, message: 'Path must be within orgName' }
+
   logger.info(`Deleting ${fullPath}`)
 
   fs.rmSync(fullPath, { recursive: true })

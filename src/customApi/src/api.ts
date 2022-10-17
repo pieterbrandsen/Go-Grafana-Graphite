@@ -30,7 +30,7 @@ app.post('/deletePath', (req, res) => {
     `${req.ip}, DeletePath called with path: ${req.body.path} by user: ${req.body.username}`
   )
 
-  const result = DeletePath(req.body.path)
+  const result = DeletePath(req.body.path,req.body.orgName)
   logger.info(`${req.body.path}, Result: ${JSON.stringify(result)}`)
   res.status(result.code).send(result.message)
 })
