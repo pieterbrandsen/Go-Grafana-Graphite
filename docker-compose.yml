@@ -37,6 +37,16 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - CARBON_RELAY_NG_URL=http://carbon-relay-ng:2003
+  vue3:
+    build: src/frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - postgres
+      - custom-api
   carbon-relay-ng:
     image: grafana/carbon-relay-ng
     depends_on:
