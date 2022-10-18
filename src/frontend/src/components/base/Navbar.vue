@@ -117,10 +117,14 @@ function toggleMobileNav() { showMobileMenu.value = !showMobileMenu.value; }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 document.onclick = function onClick(event: any) {
-  const { id } = event.target;
-  if (id !== 'dropDownNavMain') dropdowns.main.value = false;
-  if (id !== 'dropDownNavSupport') dropdowns.support.value = false;
-  if (id !== 'dropDownNavGrafana') dropdowns.grafana.value = false;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dropdown = event.path.find((path: any) => path.id && path.id.includes('dropDownNav'));
+  if (dropdown) {
+    const { id } = dropdown;
+    if (id !== 'dropDownNavMain') dropdowns.main.value = false;
+    if (id !== 'dropDownNavSupport') dropdowns.support.value = false;
+    if (id !== 'dropDownNavGrafana') dropdowns.grafana.value = false;
+  }
 };
 
 @Options({

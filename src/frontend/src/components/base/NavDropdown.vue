@@ -1,6 +1,6 @@
-<template>
-    <li :id="`dropDownNav${title}`">
-          <div class="relative">
+<template >
+    <li :id="`dropDownNav${title}`" class="relative">
+          <div>
             <!-- Dropdown toggle button -->
             <button
               @click="$emit('showClicked')"
@@ -50,7 +50,6 @@
 <script lang="ts">
 import { NavigationItem } from '@/assets/types';
 import { Options, Vue } from 'vue-class-component';
-// import {NavigationItem} from 'types'
 
 @Options({
   props: {
