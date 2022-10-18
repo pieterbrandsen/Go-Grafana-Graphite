@@ -49,6 +49,7 @@
         <NavDropdown title="Main" :routes="navigation.main" :show="dropdowns.main" @showClicked="dropdowns.main = !dropdowns.main" target="_self"/>
         <NavDropdown title="Support" :routes="navigation.support" :show="dropdowns.support" @showClicked="dropdowns.support = !dropdowns.support" target="_blank"/>
         <NavDropdown title="Grafana" :routes="navigation.grafana" :show="dropdowns.grafana" @showClicked="dropdowns.grafana = !dropdowns.grafana" target="_self"/>
+        <Login />
       </ul>
     </nav>
   </div>
@@ -58,6 +59,7 @@
 import { Options, Vue } from 'vue-class-component';
 import ApplicationLogo from '@/components/base/ApplicationLogo.vue';
 import NavDropdown from '@/components/base/NavDropdown.vue';
+import Login from '@/components/auth/Login.vue';
 import { ref } from 'vue';
 import { StringMap, NavigationItem } from '@/assets/types';
 
@@ -107,6 +109,9 @@ const navigation: StringMap<Array<NavigationItem>> = {
   account: [],
 };
 
+const isLoggedIn = false;
+
+console.log('isLoggedIn: ', isLoggedIn);
 const showMobileMenu = ref(false);
 const dropdowns = {
   main: ref(false),
@@ -131,6 +136,7 @@ document.onclick = function onClick(event: any) {
   components: {
     ApplicationLogo,
     NavDropdown,
+    Login,
   },
   data() {
     return {
@@ -145,6 +151,8 @@ export default class Navbar extends Vue {
   ApplicationLogo!: typeof ApplicationLogo;
 
   NavDropdown!: typeof NavDropdown;
+
+  Login!: typeof Login;
 
   navigation!: StringMap<NavigationItem[]>;
 
