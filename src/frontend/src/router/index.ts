@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-// import Title from '@/components/base/Title.vue';
-// import Sidebar from '@/components/base/Sidebar.vue';
 
-const Header = () => import('@/components/base/Header.vue');
-const Sidebar = () => import('@/components/base/Sidebar.vue');
+const Navbar = () => import('@/components/base/Navbar.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -11,8 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     components: {
       default: () => import('@/views/HomeView.vue'),
-      Header,
-      Sidebar,
+      Navbar,
     },
   },
 ];
