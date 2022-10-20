@@ -49,7 +49,8 @@
         <NavDropdown title="Main" :routes="navigation.main" :show="dropdowns.main" @showClicked="dropdowns.main = !dropdowns.main" target="_self"/>
         <NavDropdown title="Support" :routes="navigation.support" :show="dropdowns.support" @showClicked="dropdowns.support = !dropdowns.support" target="_blank"/>
         <NavDropdown title="Grafana" :routes="navigation.grafana" :show="dropdowns.grafana" @showClicked="dropdowns.grafana = !dropdowns.grafana" target="_self"/>
-        <Login />
+        <Login v-if="username === undefined"/>
+        <Logout v-else />
       </ul>
     </nav>
   </div>
@@ -60,8 +61,10 @@ import { Options, Vue } from 'vue-class-component';
 import ApplicationLogo from '@/components/base/ApplicationLogo.vue';
 import NavDropdown from '@/components/base/NavDropdown.vue';
 import Login from '@/components/auth/Login.vue';
+import Logout from '@/components/auth/Logout.vue';
 import { ref } from 'vue';
 import { StringMap, NavigationItem } from '@/assets/types';
+import store from '@/store';
 
 const navigation: StringMap<Array<NavigationItem>> = {
   main: [
@@ -109,9 +112,6 @@ const navigation: StringMap<Array<NavigationItem>> = {
   account: [],
 };
 
-const isLoggedIn = false;
-
-console.log('isLoggedIn: ', isLoggedIn);
 const showMobileMenu = ref(false);
 const dropdowns = {
   main: ref(false),
@@ -137,6 +137,7 @@ document.onclick = function onClick(event: any) {
     ApplicationLogo,
     NavDropdown,
     Login,
+    Logout,
   },
   data() {
     return {
@@ -146,6 +147,11 @@ document.onclick = function onClick(event: any) {
       toggleMobileNav,
     };
   },
+  computed: {
+    username() {
+      return store.state.username;
+    },
+  },
 })
 export default class Navbar extends Vue {
   ApplicationLogo!: typeof ApplicationLogo;
@@ -154,6 +160,8 @@ export default class Navbar extends Vue {
 
   Login!: typeof Login;
 
+  Logout!: typeof Logout;
+
   navigation!: StringMap<NavigationItem[]>;
 
   showMobileMenu!: boolean;
@@ -161,5 +169,7 @@ export default class Navbar extends Vue {
   dropdowns!: StringMap<boolean>;
 
   toggleMobileNav!: () => void;
+
+  username!: string;
 }
 </script>
