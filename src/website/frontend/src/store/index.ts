@@ -26,7 +26,6 @@ export default createStore({
       state.username = user.username;
     },
     logoutUser(state:UserState) {
-      console.log('logoutUser3');
       state.email = undefined;
       state.username = undefined;
     },

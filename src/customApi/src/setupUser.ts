@@ -143,7 +143,28 @@ async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> 
   }
 }
 
+async function Authenticate(code:string): Promise<any> {
+  try {
+    const result = await axios({
+      url: `${grafanaApiUrl}/auth/ldap`,
+      method: 'post',
+      data: {
+        code: code
+      }
+    })
+    console.log(result)
+    return result.data
+  } catch (err: any) {
+    console.log(err)
+    logger.error(`Authenticate error! ${JSON.stringify(err)}`)
+    return err.response
+  }
+}
+
 export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
+  if (config.code === undefined) {
+    return { code: 401, message: 'Invalid code' }
+  }
   if (config.username === undefined) {
     return { code: 400, message: 'username is required' }
   }
@@ -158,12 +179,16 @@ export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
     password: config.password
   }
 
-  const user = await CreateUser(config)
-  if (user.status !== undefined) return { code: user.status, message: user.data.message }
+  // const user = await CreateUser(config)
+  // if (user.status !== undefined) return { code: user.status, message: user.data.message }
 
-  const org = await GetOrg(config.email)
-  if (org.status !== undefined) return { code: org.status, message: org.data.message }
-  const orgId = org.id
+  // const org = await GetOrg(config.email)
+  // if (org.status !== undefined) return { code: org.status, message: org.data.message }
+  // const orgId = org.id
+  const orgId = 1
+
+  const authenticate = await Authenticate(config.code)
+  if (authenticate.status !== undefined) return { code: authenticate.status, message: authenticate.data.message }
 
   const switchToOrg = await SwitchToOrg(orgId, userLogin)
   if (switchToOrg.status !== undefined) return { code: switchToOrg.status, message: switchToOrg.data.message }
@@ -178,6 +203,9 @@ export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
 }
 
 export async function AddUserToOrgCommand(config:Config):Promise<ApiResponse> {
+  if (config.code === undefined) {
+    return { code: 401, message: 'Invalid code' }
+  }
   if (config.targetUsername === undefined) {
     return { code: 400, message: 'targetUsername is undefined' }
   }

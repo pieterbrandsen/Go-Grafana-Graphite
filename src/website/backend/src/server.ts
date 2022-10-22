@@ -1,4 +1,6 @@
 import express from 'express'
+import dotenv from 'dotenv'
+dotenv.config() 
 import bodyParser from 'body-parser'
 import winston from 'winston'
 import axios from 'axios'
@@ -19,10 +21,11 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-const clientVueID = process.env.GITHUB_VUE_OAUTH_CLIENT_ID || "";
-const clientVueSecret = process.env.GITHUB_VUE_OAUTH_CLIENT_SECRET || "";
+const clientId = process.env.GITHUB_OAUTH_CLIENT_ID || "";
+const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET || "";
 const host = process.env.FRONTEND_URL;
-async function GetAccessToken(code:string, clientId:string, clientSecret:string) {
+
+async function GetAccessToken(code:string) {
   try {
     const loginResponse = await axios({
       method: 'post',
@@ -48,7 +51,6 @@ async function GetGithubUser(accessToken:string) {
         Authorization: 'token ' + accessToken
       }
     })
-    console.log("userResponse", userResponse.data);
     return userResponse.data;
   } catch (error) {
     logger.error(`GetGithubUser error: ${JSON.stringify(error)}`)
@@ -57,24 +59,31 @@ async function GetGithubUser(accessToken:string) {
 }
 
 app.get("/api/sessions/oauth/github", async (req, res) => {
+  console.log("req.query: " + JSON.stringify(req.query));
   logger.info(`api/sessions/oauth/github called with code: ${req.query.code}`)
   const code = req.query.code as string;
-  const state = req.query.state as string;
-  let username = "";
-  let email = "";
+  let username = undefined;
+  let email = undefined;
 
   try {
-    const access_token = await GetAccessToken(code, clientVueID, clientVueSecret);
+    const access_token = await GetAccessToken(code);
     if (!access_token || typeof access_token !== "string") throw new Error("No access token returned");
+    
     const userResponse = await GetGithubUser(access_token);
     username = userResponse.login;
     email = userResponse.email;
+    const response = await axios.post(`http://custom-api:8000/setupUser`, {
+      username,
+      email,
+      code
+    })
+    logger.info(`customApi/setupUser response: ${JSON.stringify(response.data)}`)
   } catch (error) {
     logger.error(`api/sessions/oauth/github error: ${JSON.stringify(error)}`)
   }
   finally {
-    logger.info(`api/sessions/oauth/github redirecting to ${host}/#/login?username=${username}&email=${email}&state=${state}`)
-    res.redirect(`${host}/login?username=${username}&email=${email}&state=${state}`);
+    logger.info(`api/sessions/oauth/github redirecting to ${host}/login?username=${username}&email=${email}`)
+    res.redirect(`${host}/#/login?username=${username}&email=${email}`);
   }
 });
 

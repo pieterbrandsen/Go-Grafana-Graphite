@@ -1,6 +1,7 @@
 interface StringMap<T> { [key: string]: T; }
 
 interface Config {
+    code: string;
     email: string;
     username: string;
     targetUsername?: string;
