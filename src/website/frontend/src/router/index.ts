@@ -1,5 +1,5 @@
 import getGitHubUrl from '@/oauth/GithubAuth';
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import store from '@/store/index';
 
 const Navbar = () => import('@/components/base/Navbar.vue');
@@ -21,14 +21,19 @@ const routes: Array<RouteRecordRaw> = [
       Navbar,
     },
     beforeEnter: async (to, from, next) => {
+      console.log(from, !from.name);
       if (!from.name) {
         const { query } = to;
-        let path = query.from as string;
-        if (!path || path === 'undefined' || path.startsWith('/login')) path = '/';
+        const path = query.from;
+        console.log(store.state.username);
+        console.log(path);
+        // if (!path || path === 'undefined' || path.startsWith('/login')) path = '/';
         store.dispatch('verifyUser', { username: query.username, email: query.email });
-        next({ path });
+        next();
+        // next({ path });
       } else {
         const githubUrl = getGitHubUrl(from.path);
+        console.log(from.path);
         window.location.href = githubUrl;
         next();
       }
@@ -59,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes,
 });
 

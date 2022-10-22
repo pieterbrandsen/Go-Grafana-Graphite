@@ -134,7 +134,7 @@ async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> 
       url: `${grafanaApiUrl}/dashboards/db`,
       method: 'post',
       auth: userLogin,
-      data: { dashboard: JSON.parse(dashboard) }
+      data: { dashboard: dashboard }
     })
     return result.data
   } catch (err: any) {
@@ -144,8 +144,14 @@ async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> 
 }
 
 export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
+  if (config.username === undefined) {
+    return { code: 400, message: 'username is required' }
+  }
+  if (config.email === undefined) {
+    return { code: 400, message: 'email is required' }
+  }
   config.username = config.username.toLowerCase()
-  config.email = `${config.username}@${config.username}.com`
+  config.email = config.email.toLowerCase()
 
   const userLogin: AxiosBasicCredentials = {
     username: config.username,

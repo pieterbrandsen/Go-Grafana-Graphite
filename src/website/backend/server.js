@@ -7,39 +7,58 @@ const { json } = pkg;
 import cors from "cors";
 import axios from 'axios';
 
+const host = process.env.FRONTEND_URL;
 const port = 8081;
 app.use(cors());
 app.use(json());
 
-const clientID = process.env.GITHUB_OAUTH_CLIENT_ID;
-const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET;
+const clientVueID = process.env.GITHUB_VUE_OAUTH_CLIENT_ID;
+const clientVueSecret = process.env.GITHUB_VUE_OAUTH_CLIENT_SECRET;
+
+const clientGrafanaID = process.env.GITHUB_GRAFANA_OAUTH_CLIENT_ID;
+const clientGrafanaSecret = process.env.GITHUB_GRAFANA_OAUTH_CLIENT_SECRET;
+
+async function GetAccessToken(code, clientId, clientSecret) {
+  try {
+    const loginResponse = await axios({
+      method: 'post',
+      url: `https://github.com/login/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&code=${code}`,
+      // Set the content type header, so that we get the response in JSON
+      headers: {
+        accept: 'application/json'
+      }
+    })
+    return loginResponse.data.access_token;
+  } catch (error) {
+    return error.response;
+  }
+}
+
+async function GetGithubUser(accessToken) {
+  try {
+    const userResponse = await axios({
+      method: 'get',
+      url: `https://api.github.com/user`,
+      headers: {
+        Authorization: 'token ' + accessToken
+      }
+    })
+    return userResponse.data;
+
+  } catch (error) {
+    return { username: undefined, email: undefined }
+  }
+}
 
 app.get("/api/sessions/oauth/github", async (req, res) => {
-  const requestToken = req.query.code
-  
-  axios({
-    method: 'post',
-    url: `https://github.com/login/oauth/access_token?client_id=${clientID}&client_secret=${clientSecret}&code=${requestToken}`,
-    // Set the content type header, so that we get the response in JSON
-    headers: {
-         accept: 'application/json'
-    }
-  }).then((response) => {
-    res.redirect(`/success?access_token=${response.data.access_token}&state=${req.query.state}`);
-  })
-});
-
-app.get('/success', function(req, res) {
-  const access_token = req.query.access_token;
-  axios({
-    method: 'get',
-    url: `https://api.github.com/user`,
-    headers: {
-      Authorization: 'token ' + access_token
-    }
-  }).then((response) => {
-    res.redirect(`http://localhost:8080/login?username=${response.data.login}&email=${response.data.email}&from=${req.query.state}`);
-  })
+  try {
+    const access_token = await GetAccessToken(req.query.code, clientVueID, clientVueSecret);
+    if (!access_token || typeof access_token !== "string") throw new Error("No access token returned");
+    const userResponse = await GetGithubUser(access_token);
+    res.redirect(`${host}/login?username=${userResponse.login}&email=${userResponse.email}&from=${req.query.state}`);
+  } catch (error) {
+    res.redirect(`${host}/login?from=${req.query.state}`);
+  }
 });
 
 app.listen(port, () => {

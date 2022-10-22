@@ -10,7 +10,7 @@ services:
       - "8000:8000"
     volumes:
       - ./go-carbon-storage/whisper:/go-carbon-storage
-      - ./exampleStats/dashboard.json:/app/dashboard.json
+      - ./exampleStats/dashboard.json:/app/dist/dashboard.json
       - ./logs/customApi:/app/logs
     environment:
      - POSTGRES_URL=http://postgres:3000
@@ -37,10 +37,17 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - CARBON_RELAY_NG_URL=http://carbon-relay-ng:2003
-  vue3:
-    build: src/frontend
+  vue3-frontend:
+    build: src/website/frontend
     ports:
       - "8080:8080"
+    networks:
+      - frontend
+      - backend
+  vue3-backend:
+    build: src/website/backend
+    ports:
+      - "8081:8081"
     networks:
       - frontend
       - backend
@@ -116,7 +123,7 @@ services:
     image: grafana/grafana-oss:9.0.4-ubuntu
     volumes:
       - private_grafana_data:/var/lib/grafana
-      - ./config/grafana:/etc/grafana
+      - ./config/privateGrafana:/etc/grafana
       - ./logs/privateGrafana:/var/log/grafana
     ports:
       - 3001:3000
