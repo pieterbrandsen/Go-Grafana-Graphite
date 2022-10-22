@@ -5,7 +5,7 @@ WORKDIR "/app"
 COPY . .
 RUN npm install
 
-# RUN mkdir "/logs"
+RUN mkdir "/logs"
 
-# RUN npm run build
-CMD ["node", "server"]
+RUN npm run build
+CMD ["npm", "run", "start"]
