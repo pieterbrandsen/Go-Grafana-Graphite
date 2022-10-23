@@ -113,7 +113,7 @@ export default class HandleStatsGetter {
     const shard = this.config.shard
 
     const res = await this.req(`/api/user/memory-segment?segment=${statsSegment}&shard=${shard}`, 'GET')
-    if (res === undefined) return {}
+    if (res === undefined || res.data == null) return {}
     try {
       const data = JSON.parse(res.data)
       return data; 
