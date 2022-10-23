@@ -108,11 +108,25 @@ export default class HandleStatsGetter {
     return data
   }
 
+  async GetMemorySegment (): Promise<any> {
+    const statsSegment = this.config.stats_segment
+    const shard = this.config.shard
+
+    const res = await this.req(`/api/user/memory-segment?segment=${statsSegment}&shard=${shard}`, 'GET')
+    if (res === undefined) return {}
+    try {
+      const data = JSON.parse(res.data)
+      return data; 
+    } catch (error) {
+      return {}      
+    }
+  }
+
   async GetLeaderboard (): Promise<any> {
     const res = await this.req(`/api/leaderboard/find?username=${this.config.username}&mode=world`, 'GET')
     if (res === undefined) return undefined
     const leaderboard = res.data.list
-    if (leaderboard.length === 0) return { rank: 0, score: 0 }
+    if (leaderboard.length === 0) return undefined
     const { rank, score } = leaderboard.slice(-1)[0]
     return { rank, score }
   }
@@ -154,7 +168,7 @@ export default class HandleStatsGetter {
     }
 
     const leaderboard = await this.GetLeaderboard()
-    const memory = await this.GetMemory()
+    const memory = !config.is_stats_segment ? await this.GetMemory() : await this.GetMemorySegment();
     if (leaderboard === undefined || memory === undefined) {
       logger.error(`Failed to get leaderboard or memory for ${config.username}-${config.shard}-${config.user_id}, ${leaderboard}, ${memory}`)
       return
