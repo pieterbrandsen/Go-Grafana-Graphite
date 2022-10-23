@@ -32,9 +32,9 @@ export default class HandleStatsGetter {
 
   GetHost (): string {
     if (this.config.is_private_server) {
-      return `http://${this.config.host as string}:${this.config.port as number}/api`
+      return `http://${this.config.host as string}:${this.config.port as number}`
     }
-    return 'https://api.screeps.com:443/api'
+    return 'https://api.screeps.com:443'
   }
 
   async req (path: string, method = 'GET', body = {}): Promise<any> {
@@ -90,7 +90,7 @@ export default class HandleStatsGetter {
   }
 
   async GetPrivateServerToken (): Promise<any> {
-    const res = await this.req('/auth/signin', 'POST', {
+    const res = await this.req('/api/auth/signin', 'POST', {
       email: this.config.username,
       password: this.config.private_server_password
     })
@@ -102,14 +102,14 @@ export default class HandleStatsGetter {
     const statsPath = this.config.stats_path
     const shard = this.config.shard
 
-    const res = await this.req(`/user/memory?path=${statsPath}&shard=${shard}`, 'GET')
+    const res = await this.req(`/api/user/memory?path=${statsPath}&shard=${shard}`, 'GET')
     if (res === undefined) return undefined
     const data = await this.gz(res.data.data)
     return data
   }
 
   async GetLeaderboard (): Promise<any> {
-    const res = await this.req(`/leaderboard/find?username=${this.config.username}&mode=world`, 'GET')
+    const res = await this.req(`/api/leaderboard/find?username=${this.config.username}&mode=world`, 'GET')
     if (res === undefined) return undefined
     const leaderboard = res.data.list
     if (leaderboard.length === 0) return { rank: 0, score: 0 }
@@ -118,14 +118,17 @@ export default class HandleStatsGetter {
   }
 
   async getUsers (): Promise<any> {
-    const res = await this.req('/stats/users', 'GET')
-    if (res === undefined) return undefined
+    const res = await this.req('/api/stats/users', 'GET')
     return res
   }
 
   async getRoomsObjects (): Promise<any> {
-    const res = await this.req('/stats/rooms/objects', 'GET')
-    if (res === undefined) return undefined
+    const res = await this.req('/api/stats/rooms/objects', 'GET')
+    return res
+  }
+
+  async getAdminUtilsServerStats(): Promise<any> {
+    const res = await this.req('/stats', 'GET')
     return res
   }
 
@@ -159,22 +162,27 @@ export default class HandleStatsGetter {
     memory.leaderboard = leaderboard
 
     let serverStats
+    let adminUtilsServerStats;
     if (config.include_server_stats) {
       const users = await this.getUsers()
       const roomsObjects = await this.getRoomsObjects()
       if (users !== undefined && roomsObjects !== undefined) serverStats = ConvertServerStats(users.data, roomsObjects.data)
+      adminUtilsServerStats = await this.getAdminUtilsServerStats()
     }
 
-    const result = await this.Report(memory, serverStats)
+    const result = await this.Report(memory, serverStats, adminUtilsServerStats)
     logger.info(`Reported ${config.username}-${config.shard}-${config.user_id} ${serverStats ? 'with serverStats' : ''}, ${result}`)
   }
 
-  async Report (stats: any, serverStats: any): Promise<any> {
+  async Report (stats: any, serverStatsObj: any, adminUtilsServerStatsObj:any): Promise<any> {
     try {
       const user = await Users.GetUser(this.config.user_id)
       if (user === undefined) return undefined
       const host = (this.config.host ?? '').replace(/\./g, '_')
-      client.write({ screeps: { [user.username]: { stats: { [this.config.shard]: { [this.config.prefix]: stats } }, serverStats: { [host]: serverStats } } } }, (err: any) => {
+
+      const serverStats = serverStatsObj ? { [host]: serverStatsObj } : undefined;
+      const adminUtilsServerStats = adminUtilsServerStatsObj ? { [host]: adminUtilsServerStatsObj } : undefined;
+      client.write({ screeps: { [user.username]: { stats: { [this.config.shard]: { [this.config.prefix]: stats } }, serverStats, adminUtilsServerStats } } }, (err: any) => {
         if (err !== undefined) logger.error(err)
       })
       return true
