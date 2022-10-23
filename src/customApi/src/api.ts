@@ -5,7 +5,7 @@ import winston from 'winston'
 import path from 'path'
 
 import DeletePath from './deletePath.js'
-import {SetupUserCommand, AddUserToOrgCommand} from './setupUser.js'
+import {SetupUserCommand, AddUserToOrgCommand, GetUserCommand} from './setupUser.js'
 
 global.__dirname = path.resolve('./')
 
@@ -41,7 +41,7 @@ app.post('/setupUser', async (req, res) => {
     )
 
     const result = await SetupUserCommand(req.body)
-    logger.info(`${req.body.username}, Result: ${JSON.stringify(result)}`)
+    logger.info(`${req.body.username}${result.func ? `, Func: ${result.func}`: ""}, Result: ${JSON.stringify(result)}`)
     res.status(result.code).send(result.message)
   } catch (error) {
     logger.error(`${req.body.username}, Error: ${JSON.stringify(error)}`)
@@ -58,6 +58,19 @@ app.post('/addUserToOrg',async (req, res) => {
     res.status(result.code).send(result.message)
   } catch (error) {
     logger.error(`${req.body.username}, Error: ${JSON.stringify(error)}`)
+  }
+})
+app.get('/getUser',async (req, res) => {
+  try {
+    logger.info(
+      `${req.ip}, GetUser called with username: ${req.query.username}`
+    )
+
+    const result = await GetUserCommand(req.query.username as string)
+    logger.info(`${req.query.username}, Result: ${JSON.stringify(result)}`)
+    res.status(result.code).send(result.message)
+  } catch (error) {
+    logger.error(`${req.query.username}, Error: ${JSON.stringify(error)}`)
   }
 })
 

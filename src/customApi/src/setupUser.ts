@@ -59,7 +59,7 @@ async function CreateUser (config: Config): Promise<any> {
         name: config.username,
         email: config.email,
         login: config.username,
-        password: config.password,
+        password: process.env.GRAFANA_PASSWORD,
         orgId: undefined
       }
     })
@@ -143,28 +143,21 @@ async function CreateDashboard (userLogin: AxiosBasicCredentials): Promise<any> 
   }
 }
 
-async function Authenticate(code:string): Promise<any> {
+async function GetUser(userLogin:AxiosBasicCredentials):Promise<any> {
   try {
     const result = await axios({
-      url: `${grafanaApiUrl}/auth/ldap`,
-      method: 'post',
-      data: {
-        code: code
-      }
+      url: `${grafanaApiUrl}/user`,
+      method: 'get',
+      auth: userLogin
     })
-    console.log(result)
     return result.data
   } catch (err: any) {
-    console.log(err)
-    logger.error(`Authenticate error! ${JSON.stringify(err)}`)
+    logger.error(`GetUser error! ${JSON.stringify(err)}`)
     return err.response
   }
 }
 
 export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
-  if (config.code === undefined) {
-    return { code: 401, message: 'Invalid code' }
-  }
   if (config.username === undefined) {
     return { code: 400, message: 'username is required' }
   }
@@ -176,46 +169,39 @@ export async function SetupUserCommand (config: Config): Promise<ApiResponse> {
 
   const userLogin: AxiosBasicCredentials = {
     username: config.username,
-    password: config.password
+    password: process.env.GRAFANA_PASSWORD as string
   }
 
-  // const user = await CreateUser(config)
-  // if (user.status !== undefined) return { code: user.status, message: user.data.message }
+  const user = await CreateUser(config)
+  if (user.status !== undefined) return { code: user.status, message: user.data.message, func: 'CreateUser' }
 
-  // const org = await GetOrg(config.email)
-  // if (org.status !== undefined) return { code: org.status, message: org.data.message }
-  // const orgId = org.id
-  const orgId = 1
-
-  const authenticate = await Authenticate(config.code)
-  if (authenticate.status !== undefined) return { code: authenticate.status, message: authenticate.data.message }
+  const org = await GetOrg(config.email)
+  if (org.status !== undefined) return { code: org.status, message: org.data.message, func: "GetOrg" }
+  const orgId = org.id
 
   const switchToOrg = await SwitchToOrg(orgId, userLogin)
-  if (switchToOrg.status !== undefined) return { code: switchToOrg.status, message: switchToOrg.data.message }
+  if (switchToOrg.status !== undefined) return { code: switchToOrg.status, message: switchToOrg.data.message, func: "SwitchToOrg"  }
 
   const datasource = await CreateDatasource(userLogin)
-  if (datasource.status !== undefined) return { code: datasource.status, message: datasource.data.message }
+  if (datasource.status !== undefined) return { code: datasource.status, message: datasource.data.message, func: "CreateDatasource"  }
 
   const dashboard = await CreateDashboard(userLogin)
-  if (dashboard.status !== undefined) return { code: dashboard.status, message: dashboard.data.message }
+  if (dashboard.status !== undefined) return { code: dashboard.status, message: dashboard.data.message, func: "CreateDashboard"  }
 
   return { code: 200, message: 'User setup successfully' }
 }
 
 export async function AddUserToOrgCommand(config:Config):Promise<ApiResponse> {
-  if (config.code === undefined) {
-    return { code: 401, message: 'Invalid code' }
-  }
   if (config.targetUsername === undefined) {
     return { code: 400, message: 'targetUsername is undefined' }
   }
  
   config.username = config.username.toLowerCase()
+  config.email = config.email.toLowerCase()
   config.targetUsername = config.targetUsername.toLowerCase()
-  config.email = `${config.username}@${config.username}.com`
   const userLogin: AxiosBasicCredentials = {
     username: config.username,
-    password: config.password
+    password: process.env.GRAFANA_PASSWORD as string
   }
 
   const org = await GetOrg(config.email)
@@ -229,4 +215,19 @@ export async function AddUserToOrgCommand(config:Config):Promise<ApiResponse> {
   if (addUserToOrg.status !== undefined) return { code: addUserToOrg.status, message: addUserToOrg.data.message }
 
   return { code: 200, message: 'User added to org successfully' }
+}
+
+export async function GetUserCommand(username:string):Promise<ApiResponse> {
+  if (username === undefined) {
+    return { code: 400, message: 'username is required' }
+  }
+
+  const userLogin: AxiosBasicCredentials = {
+    username,
+    password: process.env.GRAFANA_PASSWORD as string
+  }
+
+  const user = await GetUser(userLogin)
+  if (user.status !== undefined) return { code: user.status, message: user.data.message }
+  return { code: 200, message: 'User found' }
 }

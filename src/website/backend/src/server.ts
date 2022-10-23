@@ -59,7 +59,6 @@ async function GetGithubUser(accessToken:string) {
 }
 
 app.get("/api/sessions/oauth/github", async (req, res) => {
-  console.log("req.query: " + JSON.stringify(req.query));
   logger.info(`api/sessions/oauth/github called with code: ${req.query.code}`)
   const code = req.query.code as string;
   let username = undefined;
@@ -72,12 +71,17 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
     const userResponse = await GetGithubUser(access_token);
     username = userResponse.login;
     email = userResponse.email;
-    const response = await axios.post(`http://custom-api:8000/setupUser`, {
-      username,
-      email,
-      code
-    })
-    logger.info(`customApi/setupUser response: ${JSON.stringify(response.data)}`)
+
+    const getUserResponse = await axios.get(`http://custom-api:8000/getUser?username=${username}`)
+    logger.info(`customApi/getUser response: ${JSON.stringify(getUserResponse.data)}`)
+    if (getUserResponse.status !== 200 && username) {
+      const setupUserResponse = await axios.post(`http://custom-api:8000/setupUser`, {
+        username,
+        email,
+        code
+      })
+      logger.info(`customApi/setupUser response: ${JSON.stringify(setupUserResponse.data)}`)
+    }
   } catch (error) {
     logger.error(`api/sessions/oauth/github error: ${JSON.stringify(error)}`)
   }
