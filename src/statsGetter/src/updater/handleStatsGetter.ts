@@ -82,6 +82,7 @@ export default class HandleStatsGetter {
   }
 
   async gz (data: string): Promise<any> {
+    if (data === undefined) return {}
     const gunzipAsync = util.promisify(zlib.gunzip)
     const buf = Buffer.from(data.slice(3), 'base64')
     const ret = await gunzipAsync(buf)
