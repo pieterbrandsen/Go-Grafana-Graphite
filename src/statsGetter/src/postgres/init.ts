@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS configs (
     shard VARCHAR (255),
     prefix VARCHAR (255) NOT NULL,
     stats_path VARCHAR (255),
-    stats_segment VARCHAR (255),
+    stats_segment INT,
     token VARCHAR (255) NOT NULL,
     username VARCHAR (255) NOT NULL,
     private_server_password VARCHAR (255),

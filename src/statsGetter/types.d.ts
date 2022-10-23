@@ -12,7 +12,7 @@ interface Config {
     port?: number;
     prefix: string;
     stats_path?: string;
-    stats_segment?: string;
+    stats_segment?: number;
     shard:string;
     token?: string;
     username: string;
