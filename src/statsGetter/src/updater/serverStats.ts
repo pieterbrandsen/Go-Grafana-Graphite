@@ -258,7 +258,7 @@ function modifyRoomObjects (roomObjects: StringMap<any>): any {
   return updatedObjects
 }
 
-export default function ConvertServerStats (unfilteredUsers: any, unfilteredRoomObjects: any): any {
+export function ConvertServerStats (unfilteredUsers: any, unfilteredRoomObjects: any): any {
   if (unfilteredUsers === undefined || unfilteredRoomObjects === undefined) return
   try {
     const unfilteredActiveUsers = unfilteredUsers.filter((u: any) => u.active === 10000)
@@ -268,4 +268,15 @@ export default function ConvertServerStats (unfilteredUsers: any, unfilteredRoom
     logger.error(error)
     return undefined
   }
+}
+
+export function ConvertAdminUtilsServerStats (unfilteredStats: any) {
+  if (unfilteredStats === undefined) return
+  const adminUtilsServerStats: any = unfilteredStats
+  const groupedAdminStatsUsers: any = {};
+  adminUtilsServerStats.users.forEach((user:any) =>{
+    groupedAdminStatsUsers[user.username] = user;
+  })
+  adminUtilsServerStats.users = groupedAdminStatsUsers;
+  return adminUtilsServerStats;
 }
