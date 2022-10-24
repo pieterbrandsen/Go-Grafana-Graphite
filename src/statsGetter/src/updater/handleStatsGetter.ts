@@ -222,6 +222,16 @@ export default class HandleStatsGetter {
       );
       return;
     }
+    const isPrivateServerHostOnline =
+      config.is_private_server &&
+      (await this.TestHost(config.host || "", config.port || 21025));
+    if (config.is_private_server && !isPrivateServerHostOnline) {
+      logger.error(
+        `${config.config_id} - ${config.host}:${config.port} is offline`
+      );
+      return;
+    }
+
     if (config.is_private_server) {
       const token = await this.GetPrivateServerToken();
       if (token === undefined) {
@@ -248,17 +258,16 @@ export default class HandleStatsGetter {
     let serverStats;
     let adminUtilsServerStats;
 
-    if (
-      config.include_server_stats &&
-      (await this.TestHost(config.host || "", config.port || 21025))
-    ) {
+    if (config.include_server_stats) {
       const users = await this.getUsers();
       const roomsObjects = await this.getRoomsObjects();
       if (users !== undefined && roomsObjects !== undefined)
         serverStats = ConvertServerStats(users.data, roomsObjects.data);
-      
+
       const adminUtilsServerStatsRes = await this.getAdminUtilsServerStats();
-      adminUtilsServerStats = ConvertAdminUtilsServerStats(adminUtilsServerStatsRes);
+      adminUtilsServerStats = ConvertAdminUtilsServerStats(
+        adminUtilsServerStatsRes
+      );
     }
 
     const result = await this.Report(
