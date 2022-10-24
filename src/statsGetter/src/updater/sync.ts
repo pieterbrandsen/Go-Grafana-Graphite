@@ -24,7 +24,7 @@ function SortByNextUpdate (configs: Config[]): Config[] {
 export default async function SyncConfigs (
   configs: Config[]
 ): Promise<Config[]> {
-  const dbConfigs = await Configs.GetConfigs()
+  const dbConfigs = (await Configs.GetConfigs(config => config.active === true))
   const newConfigs = lodash.differenceBy(dbConfigs, configs, 'config_id')
   const deletedConfigs = lodash.differenceBy(configs, dbConfigs, 'config_id')
 

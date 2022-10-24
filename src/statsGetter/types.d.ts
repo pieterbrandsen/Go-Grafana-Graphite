@@ -20,6 +20,7 @@ interface Config {
     include_server_stats: boolean;
     is_private_server: boolean;
     is_stats_segment: boolean;
+    active: boolean;
     nextUpdate: number;
 }
 interface StringMap<T> { [key: string]: T; }

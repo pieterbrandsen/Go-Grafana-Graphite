@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS configs (
     is_private_server BOOLEAN NOT NULL,
     is_stats_segment BOOLEAN NOT NULL,
     include_server_stats BOOLEAN NOT NULL
+    active BOOLEAN NOT NULL
 );
     `
 

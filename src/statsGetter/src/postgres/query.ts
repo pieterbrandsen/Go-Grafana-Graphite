@@ -87,11 +87,12 @@ export class Configs {
     return res[0]
   }
 
-  static async GetConfigs (): Promise<Config[]> {
+  static async GetConfigs (predicate?: (config:Config) => boolean): Promise<Config[]> {
     const query = `
         SELECT * FROM configs;
         `
-    const res = await Query<Config>(query)
+    const res = (await Query<Config>(query)).filter(predicate ?? (() => true))
+
     return res
   }
 

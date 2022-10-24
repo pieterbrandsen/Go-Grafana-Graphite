@@ -46,7 +46,8 @@ async function Start (): Promise<void> {
       prefix: '',
       private_server_password: 'password',
       nextUpdate: -1,
-      include_server_stats: true
+      include_server_stats: true,
+      active: true
     })
   }
 }
