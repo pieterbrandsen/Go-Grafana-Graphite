@@ -1,5 +1,6 @@
 <template>
 <h1 class="text-5xl">{{ title }}</h1>
+  <br/>
 </template>
 
 <script lang="ts">

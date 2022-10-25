@@ -1,6 +1,6 @@
 export interface NavigationItem {
     label: string;
-    href: string;
+    path: string;
 }
 
 export interface StringMap<T> {

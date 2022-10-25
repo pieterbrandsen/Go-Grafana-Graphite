@@ -70,43 +70,43 @@ const navigation: StringMap<Array<NavigationItem>> = {
   main: [
     {
       label: 'Home',
-      href: '/',
+      path: '/',
     },
-    {
-      label: 'Support',
-      href: '/support',
-    },
+    // {
+    //   label: 'Support',
+    //   path: '/support',
+    // },
   ],
   support: [
     {
       label: 'Server stats',
-      href: 'https://github.com/The-International-Screeps-Bot/screepsmod-server-stats',
+      path: '/support/server-stats',
     },
     {
       label: 'Performance server',
-      href: 'https://github.com/The-International-Screeps-Bot/Screeps-Performance-Server',
+      path: '/support/performance-server',
     },
     {
       label: 'Simple grafana runner',
-      href: 'https://github.com/The-International-Screeps-Bot/Screeps-Grafana',
+      path: '/support/screeps-grafana',
     },
     {
       label: 'The International',
-      href: 'https://github.com/The-International-Screeps-Bot/The-International-Open-Source',
+      path: '/support/the-international',
     },
   ],
   grafana: [
     {
       label: 'Grafana',
-      href: 'http://localhost:3000',
+      path: '/grafana/link',
     },
     {
       label: 'Configs',
-      href: '/configs',
+      path: '/grafana/configs',
     },
     {
       label: 'Support',
-      href: '/support',
+      path: '/grafana/support',
     },
   ],
   account: [],
@@ -124,11 +124,12 @@ function toggleMobileNav() { showMobileMenu.value = !showMobileMenu.value; }
 document.onclick = function onClick(event: any) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dropdown = event.path.find((path: any) => path.id && path.id.includes('dropDownNav'));
-  if (dropdown) {
+  const isLink = event.path[0].tagName === 'A' && dropdown !== undefined;
+  if (isLink || dropdown) {
     const { id } = dropdown;
-    if (id !== 'dropDownNavMain') dropdowns.main.value = false;
-    if (id !== 'dropDownNavSupport') dropdowns.support.value = false;
-    if (id !== 'dropDownNavGrafana') dropdowns.grafana.value = false;
+    if (isLink || id !== 'dropDownNavMain') dropdowns.main.value = false;
+    if (isLink || id !== 'dropDownNavSupport') dropdowns.support.value = false;
+    if (isLink || id !== 'dropDownNavGrafana') dropdowns.grafana.value = false;
   }
 };
 

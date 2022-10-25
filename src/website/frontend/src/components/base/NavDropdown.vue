@@ -41,7 +41,7 @@
                 w-44
               "
             >
-            <a v-for="(link, index) in routes" :key="index" :href="link.href" :target="target" class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">{{ link.label }}</a>
+            <Link v-for="(link, index) in routes" :path="link.path" :label="link.label" :key="index" />
             </div>
           </div>
         </li>
@@ -50,16 +50,19 @@
 <script lang="ts">
 import { NavigationItem } from '@/assets/types';
 import { Options, Vue } from 'vue-class-component';
+import Link from './Link.vue';
 
 @Options({
   props: {
     title: String,
     routes: Array as () => Array<NavigationItem>,
     show: Boolean,
-    target: String,
+  },
+  components: {
+    Link,
   },
 })
-export default class PageTitle extends Vue {
+export default class NavDropdown extends Vue {
     title!: string;
 
     routes!: Array<NavigationItem>;
@@ -67,6 +70,8 @@ export default class PageTitle extends Vue {
     show!: boolean;
 
     target!: string;
+
+    Link!: typeof Link;
 }
 
 </script>

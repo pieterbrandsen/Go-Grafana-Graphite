@@ -1,6 +1,5 @@
 <template>
   <PageTitle title="Welcome to Screeps Grafana"/>
-  <br/>
   <h1>On this site you can find the following information</h1>
   <ul class="list-disc list-inside">
     <li>
