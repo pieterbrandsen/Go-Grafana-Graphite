@@ -4,18 +4,11 @@
       class="px-6 py-8 bg-indigo-600 md:flex md:justify-between md:items-center"
     >
       <div class="flex items-center justify-between">
-        <router-link
-          to="/"
-          class="
-            text-xl
-            font-bold
-            text-gray-100
-            md:text-2xl
-            hover:text-indigo-400
-          "
+        <Link
+          path="/home" label=""
           >
           <ApplicationLogo class="max-h-24" />
-        </router-link>
+        </Link>
         <!-- Mobile menu button -->
         <div @click="toggleMobileNav" class="flex md:hidden">
           <button

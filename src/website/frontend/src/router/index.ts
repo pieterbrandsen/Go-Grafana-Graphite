@@ -4,7 +4,7 @@ const Navbar = () => import('@/components/base/Navbar.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     components: {
       default: () => import('@/views/HomeView.vue'),
@@ -13,9 +13,17 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/login',
-    name: 'github-oauth-result',
+    name: 'login-result',
     components: {
-      default: () => import('@/views/GithubOAuthResult.vue'),
+      default: () => import('@/views/LoginResult.vue'),
+      Navbar,
+    },
+  },
+  {
+    path: '/logout',
+    name: 'logout-result',
+    components: {
+      default: () => import('@/views/LogoutResult.vue'),
       Navbar,
     },
   },
@@ -25,12 +33,8 @@ const routes: Array<RouteRecordRaw> = [
     components: {},
     beforeEnter: (to, from, next) => {
       const grafanaUrl = process.env.VUE_APP_GRAFANA_URL;
-      if (grafanaUrl) {
-        window.location.href = grafanaUrl;
-        next();
-      } else {
-        next({ name: 'Home' });
-      }
+      window.location.href = grafanaUrl;
+      next();
     },
   },
   {
@@ -41,18 +45,25 @@ const routes: Array<RouteRecordRaw> = [
       Navbar,
     },
   },
+
+  {
+    path: '/github/oauth',
+    name: 'github-oauth',
+    components: {},
+    beforeEnter: (to, from, next) => {
+      const githubOAuthPath = GetGitHubOAuthPath();
+      window.location.href = githubOAuthPath;
+      next();
+    },
+  },
   {
     path: '/github/link',
     name: 'github-link',
     components: {},
     beforeEnter: (to, from, next) => {
       const githubUrl = process.env.VUE_APP_GITHUB_URL;
-      if (githubUrl) {
-        window.location.href = githubUrl;
-        next();
-      } else {
-        next({ name: 'Home' });
-      }
+      window.location.href = githubUrl;
+      next();
     },
   },
   {
@@ -61,12 +72,8 @@ const routes: Array<RouteRecordRaw> = [
     components: {},
     beforeEnter: (to, from, next) => {
       const githubUrl = 'https://github.com/pieterbrandsen';
-      if (githubUrl) {
-        window.location.href = githubUrl;
-        next();
-      } else {
-        next({ name: 'Home' });
-      }
+      window.location.href = githubUrl;
+      next();
     },
   },
   {
@@ -75,12 +82,8 @@ const routes: Array<RouteRecordRaw> = [
     components: {},
     beforeEnter: (to, from, next) => {
       const githubUrl = 'https://github.com/pieterbrandsen/Go-Grafana-Graphite/tree/master/exampleStats';
-      if (githubUrl) {
-        window.location.href = githubUrl;
-        next();
-      } else {
-        next({ name: 'Home' });
-      }
+      window.location.href = githubUrl;
+      next();
     },
   },
   {
