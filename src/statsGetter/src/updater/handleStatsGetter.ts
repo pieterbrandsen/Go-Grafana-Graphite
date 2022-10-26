@@ -217,10 +217,10 @@ export default class HandleStatsGetter {
   RemoveNonNumberValues(stats?: any) {
     if (stats === undefined) return {};
     for (const key in stats) {
-      if (typeof stats[key] !== "number") {
-        delete stats[key];
-      } else if (typeof stats[key] === "object") {
+      if (typeof stats[key] === "object") {
         stats[key] = this.RemoveNonNumberValues(stats[key]);
+      } else if (isNaN(stats[key])) {
+        delete stats[key];
       }
     }
     return stats;
