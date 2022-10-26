@@ -1,4 +1,4 @@
-import PostgresQuery from './query'
+import PostgresQuery from "./query";
 
 const createUserTable = `
 CREATE TABLE IF NOT EXISTS users (
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR (255) UNIQUE NOT NULL,
     password VARCHAR (255) NOT NULL
  );
-`
+`;
 const createConfigTable = `
 CREATE TABLE IF NOT EXISTS configs (
     config_id serial PRIMARY KEY,
@@ -27,10 +27,11 @@ CREATE TABLE IF NOT EXISTS configs (
     include_server_stats BOOLEAN NOT NULL
     active BOOLEAN NOT NULL
 );
-    `
+    `;
 
-async function Initialize (): Promise<void> {
-  await PostgresQuery(createUserTable)
-  await PostgresQuery(createConfigTable)
+async function Initialize(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await PostgresQuery(createUserTable);
+  await PostgresQuery(createConfigTable);
 }
-Initialize()
+Initialize();
