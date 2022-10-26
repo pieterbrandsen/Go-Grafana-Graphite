@@ -45,7 +45,7 @@
 
   <h1 class="text-3xl">Dashboards</h1>
   <p>After you saved the config you can now use path: screeps.your_stats</p>
-  <p>Example: screeps.cpu</p>
+  <p>Example: screeps.stats.shard3.cpu</p>
   <p>
     There are pre-made admin utils, server stats and mmo ready dashboards + stats file located at
     <RouterLink class="text-blue-600" to="/github/dashboards">Github</RouterLink>

@@ -1,7 +1,7 @@
 interface User {
     user_id?: number;
     username: string;
-    password: string;
+    email: string;
 }
 interface Config {
     config_id?: number;

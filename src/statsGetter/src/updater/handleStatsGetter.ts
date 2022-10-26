@@ -301,7 +301,7 @@ export default class HandleStatsGetter {
       client.write(
         {
           screeps: {
-            [user.username]: {
+            [user.email]: {
               stats: { [this.config.shard]: { [this.config.prefix]: stats } },
               serverStats,
               adminUtilsServerStats,
