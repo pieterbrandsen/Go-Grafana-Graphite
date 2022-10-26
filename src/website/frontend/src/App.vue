@@ -5,6 +5,7 @@
       <div class="m-8">
         <RouterView></RouterView>
       </div>
+      <RouterView name="Footer"></RouterView>
     </div>
 </div>
 </template>

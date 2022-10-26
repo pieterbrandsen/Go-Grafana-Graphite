@@ -1,6 +1,8 @@
+import GetGitHubOAuthPath from '@/oauth/GithubAuth';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 const Navbar = () => import('@/components/base/Navbar.vue');
+const Footer = () => import('@/components/base/Footer.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -9,6 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     components: {
       default: () => import('@/views/HomeView.vue'),
       Navbar,
+      Footer,
     },
   },
   {
@@ -17,6 +20,7 @@ const routes: Array<RouteRecordRaw> = [
     components: {
       default: () => import('@/views/LoginResult.vue'),
       Navbar,
+      Footer,
     },
   },
   {
@@ -25,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     components: {
       default: () => import('@/views/LogoutResult.vue'),
       Navbar,
+      Footer,
     },
   },
   {
@@ -43,6 +48,7 @@ const routes: Array<RouteRecordRaw> = [
     components: {
       default: () => import('@/views/grafana/Support.vue'),
       Navbar,
+      Footer,
     },
   },
 
