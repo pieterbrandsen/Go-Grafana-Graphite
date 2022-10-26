@@ -53,20 +53,15 @@
   <br />
   <h2 class="text-2xl">Images of dashboards</h2>
   <img src="@/assets/AdminUtilsDashboard.png" alt="Image of admin utils dashboard"/>
-  <br />
-
-  <ContactInformation />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import PageTitle from '@/components/base/PageTitle.vue';
-import ContactInformation from '@/components/base/ContactInformation.vue';
 
 @Options({
   components: {
     PageTitle,
-    ContactInformation,
   },
 })
 export default class GrafanaSupportView extends Vue {}

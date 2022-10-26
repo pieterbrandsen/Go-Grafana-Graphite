@@ -1,4 +1,5 @@
 import GetGitHubOAuthPath from '@/oauth/GithubAuth';
+import { Vue } from 'vue-class-component';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 const Navbar = () => import('@/components/base/Navbar.vue');
@@ -6,7 +7,7 @@ const Footer = () => import('@/components/base/Footer.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     components: {
       default: () => import('@/views/HomeView.vue'),

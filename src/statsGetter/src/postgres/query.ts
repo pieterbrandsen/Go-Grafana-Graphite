@@ -51,8 +51,8 @@ export class Users {
 
   static async CreateUser (user: User): Promise<User> {
     const query = `
-        INSERT INTO users (username, password)
-        VALUES ('${user.username}', '${user.password}')
+        INSERT INTO users (username, email)
+        VALUES ('${user.username}', '${user.email}')
         RETURNING *;
         `
     const res = await Query<User>(query)
@@ -61,7 +61,7 @@ export class Users {
 
   static async UpdateUser (user: User): Promise<User> {
     const query = `
-        UPDATE users SET username = '${user.username}', password = '${user.password}' WHERE user_id = ${user.user_id};
+        UPDATE users SET username = '${user.username}', email = '${user.email}' WHERE user_id = ${user.user_id};
         `
     const res = await Query<User>(query)
     return res[0]

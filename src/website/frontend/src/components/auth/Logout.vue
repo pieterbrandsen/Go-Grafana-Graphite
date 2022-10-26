@@ -1,11 +1,10 @@
 <template>
     <p class="block py-2 text-sm text-indigo-100">Hello {{ username }}</p>
-    <Link path="/logout" label="Logout" />
+    <RouterLink to="/logout" class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">Logout</RouterLink>
   </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Link from '@/components/base/Link.vue';
 import store from '@/store';
 
 @Options({
@@ -14,9 +13,6 @@ import store from '@/store';
       username: store.state.username,
     };
   },
-  components: {
-    Link,
-  }
 })
 export default class Logout extends Vue {
     username!: string;

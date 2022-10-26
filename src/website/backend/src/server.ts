@@ -54,7 +54,7 @@ async function GetGithubUser(accessToken:string) {
     return userResponse.data;
   } catch (error) {
     logger.error(`GetGithubUser error: ${JSON.stringify(error)}`)
-    return { username: undefined, email: undefined }
+    return {}
   }
 }
 
@@ -63,6 +63,9 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
   const code = req.query.code as string;
   let username = undefined;
   let email = undefined;
+  let id = undefined;
+
+  let message = "";
 
   try {
     const access_token = await GetAccessToken(code);
@@ -71,6 +74,7 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
     const userResponse = await GetGithubUser(access_token);
     username = userResponse.login;
     email = userResponse.email;
+    id = userResponse.id;
 
     const getUserResponse = await axios.get(`http://custom-api:8000/getUser?username=${username}`)
     logger.info(`customApi/getUser response: ${JSON.stringify(getUserResponse.data)}`)
@@ -82,12 +86,18 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
       })
       logger.info(`customApi/setupUser response: ${JSON.stringify(setupUserResponse.data)}`)
     }
+    message = "Successfully logged in! You can go back to what you wanted to do now.";
   } catch (error) {
+    message = "Something went wrong :( Please try again later and contact me if the problem persists.";
     logger.error(`api/sessions/oauth/github error: ${JSON.stringify(error)}`)
   }
   finally {
-    logger.info(`api/sessions/oauth/github redirecting to ${host}/login?username=${username}&email=${email}`)
-    res.redirect(`${host}/#/login?username=${username}&email=${email}`);
+    logger.info(`api/sessions/oauth/github redirecting to ${host}/login?username=${username}&id=${id}&message=${message}`)
+    // TODO: use 'secure' option for cookies to use https
+    res.cookie("username", username);
+    res.cookie("id", id);
+    res.cookie("message", message);
+    res.redirect(`${host}/#/login`);
   }
 });
 

@@ -41,7 +41,7 @@
                 w-44
               "
             >
-            <Link v-for="(link, index) in routes" :path="link.path" :label="link.label" :key="index" />
+            <RouterLink v-for="(link, index) in routes" :key="index" :to="link.path" class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">{{ link.label }}</RouterLink>
             </div>
           </div>
         </li>

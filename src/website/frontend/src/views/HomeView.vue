@@ -22,8 +22,6 @@
     These are some useful links to make your Screeps experience better.
   </p>
   <br/>
-  <ContactInformation/>
-  <br/>
   <h4 class="text-1xl">
     <i>If you like this project please consider adding an star to the project over <a href="https://github.com/pieterbrandsen/Go-Grafana-Graphite" class="text-blue-600" target="_blank">here</a>!</i>
   </h4>
@@ -33,12 +31,10 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import PageTitle from '@/components/base/PageTitle.vue';
-import ContactInformation from '@/components/base/ContactInformation.vue';
 
 @Options({
   components: {
     PageTitle,
-    ContactInformation,
   },
 })
 export default class HomeView extends Vue {}

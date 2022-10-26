@@ -1,15 +1,25 @@
 <template>
-  <footer
-    class="fixed bottom-0 left-0 z-20 p-4 w-full bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600"
-  >
-    <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
-      >Any questions? Please contact me!
-    </span>
-    <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
-    <li>Github: <Link to="/github/link" class="text-blue-600" target="_blank">PieterBrandsen</Link></li>
-    <li>Email: pieterbrandsen2@gmail.com</li>
-    <li>Discord: PANDA#7722</li>
-    </ul>
+  <footer class="p-4 bg-white sm:p-6 dark:bg-gray-900">
+    <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+    <div class="md:flex md:justify-between">
+      <div>
+          <span class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white"
+            >Any questions? Please contact me!
+          </span>
+        </div>
+      <div class="grid grid-cols-1 gap-8 sm:gap-6 sm:grid-cols-2">
+        <div>
+          <span class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white"
+            >Discord: PANDA#3000
+          </span>
+        </div>
+        <div>
+          <span class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
+            Github: <Link path="/github/link" label="PieterBrandsen" target="_blank">PieterBrandsen</Link>
+          </span>
+        </div>
+      </div>
+    </div>
   </footer>
 </template>
 
@@ -22,7 +32,5 @@ import Link from './Link.vue';
     Link,
   },
 })
-export default class PageTitle extends Vue {
-}
-
+export default class PageTitle extends Vue {}
 </script>

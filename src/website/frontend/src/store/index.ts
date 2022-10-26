@@ -1,33 +1,35 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import Cookies from 'js-cookie';
+// import VueCookies from 'vue-cookies';
 
 interface UserState {
   username?: string;
-  email?: string;
+  id?: number;
 }
 
 export default createStore({
   state: {
     username: undefined,
-    email: undefined,
+    id: undefined,
   },
   actions: {
-    verifyUser({ commit }, user:UserState) {
-      commit('verifyUser', user);
+    setUser({ commit }) {
+      commit('setUser');
     },
     logoutUser({ commit }) {
       commit('logoutUser');
     },
   },
   mutations: {
-    verifyUser(state:UserState, user: UserState) {
-      state.email = user.email;
-      state.username = user.username;
+    setUser(state:UserState) {
+      state.username = Cookies.getJSON('username');
+      state.id = Cookies.getJSON('id');
+      console.log(state);
     },
     logoutUser(state:UserState) {
-      state.email = undefined;
       state.username = undefined;
+      state.id = undefined;
     },
   },
   plugins: [

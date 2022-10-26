@@ -4,7 +4,7 @@ export default function GetGitHubOAuthPath() {
   const options = {
     client_id: process.env.VUE_APP_GITHUB_OAUTH_CLIENT_ID as string,
     redirect_uri: process.env.VUE_APP_GITHUB_OAUTH_REDIRECT_URL as string,
-    scope: 'user:email',
+    scope: 'read:user',
   };
 
   const qs = new URLSearchParams(options);

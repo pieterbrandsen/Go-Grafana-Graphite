@@ -1,5 +1,7 @@
-<template >
-            <RouterLink :key="key" :to="path" class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">{{ label }}</RouterLink>
+<template>
+  <RouterLink :key="key" :to="path" class="underline text-blue-600 hover:text-blue-800">{{
+    label
+  }}</RouterLink>
 </template>
 
 <script lang="ts">
@@ -13,11 +15,10 @@ import { Options, Vue } from 'vue-class-component';
   },
 })
 export default class Link extends Vue {
-    path!: string;
+  path!: string;
 
-    label!: string;
+  label!: string;
 
-    key!: string;
+  key!: string;
 }
-
 </script>
