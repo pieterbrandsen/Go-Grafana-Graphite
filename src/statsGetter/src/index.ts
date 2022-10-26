@@ -29,7 +29,7 @@ async function Start (): Promise<void> {
   if (users.length === 0) {
     const user = await Users.CreateUser({
       username: 'admin',
-      password: 'admin'
+      email: 'admin@localhost'
     })
 
     await Configs.CreateConfig({

@@ -214,6 +214,25 @@ export default class HandleStatsGetter {
     return false;
   }
 
+  RemoveNonNumberValues(stats?: any) {
+    if (stats === undefined) return {};
+    for (const key in stats) {
+      if (typeof stats[key] !== "number") {
+        delete stats[key];
+      } else if (typeof stats[key] === "object") {
+        stats[key] = this.RemoveNonNumberValues(stats[key]);
+      }
+    }
+    return stats;
+  }
+
+  ValidateStats(stats: any): boolean {
+    if (stats === undefined) return false;
+    if (typeof stats !== "object") return false;
+    if (Object.keys(stats).length === 0) return false;
+    return true;
+  }
+
   async Start(): Promise<any> {
     const config = this.config;
     if (!this.ValidateConfig()) {
@@ -277,35 +296,61 @@ export default class HandleStatsGetter {
     );
     logger.info(
       `Reported ${config.username}-${config.shard}-${config.user_id} ${
-        serverStats ? "with serverStats" : ""
+        serverStats !== undefined || adminUtilsServerStats !== undefined
+          ? "with serverStats"
+          : ""
       }, ${result}`
     );
   }
 
   async Report(
     stats: any,
-    serverStatsObj: any,
-    adminUtilsServerStatsObj: any
-  ): Promise<any> {
+    serverStats: any,
+    adminUtilsServerStats: any
+  ): Promise<boolean> {
+    let statsObj = stats;
+    let serverStatsObj = serverStats;
+    let adminUtilsServerStatsObj = adminUtilsServerStats;
+
     try {
       const user = await Users.GetUser(this.config.user_id);
-      if (user === undefined) return undefined;
+      if (user === undefined) {
+        logger.info(`User ${this.config.user_id} not found`);
+        return false;
+      } else if (user.email === undefined) {
+        logger.info(`User ${this.config.user_id} has no email`);
+        return false;
+      }
       const host = (this.config.host ?? "").replace(/\./g, "_");
+      const userStats: StringMap<any> = {};
 
-      const serverStats = serverStatsObj
-        ? { [host]: serverStatsObj }
-        : undefined;
-      const adminUtilsServerStats = adminUtilsServerStatsObj
-        ? { [host]: adminUtilsServerStatsObj }
-        : undefined;
+      statsObj = this.RemoveNonNumberValues(statsObj);
+      const validStats = this.ValidateStats(statsObj);
+      if (validStats)
+        userStats["stats"] = {
+          [this.config.shard]: { [this.config.prefix]: statsObj },
+        };
+
+      serverStatsObj = this.RemoveNonNumberValues(serverStatsObj);
+      const validServerStats = this.ValidateStats(serverStatsObj);
+      if (validServerStats)
+        userStats["serverStats"] = { [host]: serverStatsObj };
+
+      adminUtilsServerStatsObj = this.RemoveNonNumberValues(
+        adminUtilsServerStatsObj
+      );
+      const validAdminUtilsServerStats = this.ValidateStats(
+        adminUtilsServerStatsObj
+      );
+      if (validAdminUtilsServerStats)
+        userStats["adminUtilsServerStats"] = {
+          [host]: adminUtilsServerStatsObj,
+        };
+
       client.write(
         {
           screeps: {
-            [user.email]: {
-              stats: { [this.config.shard]: { [this.config.prefix]: stats } },
-              serverStats,
-              adminUtilsServerStats,
-            },
+            [user.email]: userStats,
           },
         },
         (err: any) => {
@@ -315,6 +360,7 @@ export default class HandleStatsGetter {
       return true;
     } catch (error) {
       logger.error(error);
+      return false
     }
   }
 }
