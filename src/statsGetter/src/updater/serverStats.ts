@@ -278,5 +278,6 @@ export function ConvertAdminUtilsServerStats (unfilteredStats: any) {
     groupedAdminStatsUsers[user.username] = user;
   })
   adminUtilsServerStats.users = groupedAdminStatsUsers;
+  delete adminUtilsServerStats.ticks.ticks;
   return adminUtilsServerStats;
 }
