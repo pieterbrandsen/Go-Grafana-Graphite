@@ -16,7 +16,10 @@ export default {
         clear({ targets: ["dist"] }),
         json(),
         resolve({ rootDir: 'src' }),
-        commonjs(),
+        commonjs({
+            include: 'node_modules/**',
+            ignore: ['pg-native', './native']
+        }),
         typescript({ tsconfig: './tsconfig.json' }),
     ],
 }

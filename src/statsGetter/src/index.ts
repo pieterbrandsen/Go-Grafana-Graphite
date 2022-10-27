@@ -4,7 +4,6 @@ import SyncConfigs, { UpdateConfigUpdateTime } from './updater/sync'
 import HandleStatsGetter from './updater/handleStatsGetter'
 import path from 'path'
 
-import { Configs, Users } from './postgres/query'
 let configs: Config[] = []
 global.__dirname = path.resolve('./')
 
@@ -23,35 +22,3 @@ new CronJob('*/5 * * * * *', () => {
     configs = UpdateConfigUpdateTime(configs, config)
   }
 }).start()
-
-async function Start (): Promise<void> {
-  const users = await Users.GetUsers()
-  if (users.length === 0) {
-    const user = await Users.CreateUser({
-      username: 'admin',
-      email: 'admin@localhost'
-    })
-
-    await Configs.CreateConfig({
-      config_name: 'localhost',
-      interval: 60000,
-      is_private_server: true,
-      is_stats_segment: false,
-      shard: 'performanceServer',
-      stats_path: 'stats',
-      user_id: user.user_id as number,
-      username: 'W1N1',
-      host: 'host.docker.internal',
-      port: 21025,
-      prefix: '',
-      private_server_password: 'password',
-      nextUpdate: -1,
-      include_server_stats: true,
-      active: true
-    })
-  }
-}
-
-setInterval(function () {
-  Start()
-}, 60000)

@@ -41,6 +41,14 @@ export class Users {
     return res[0]
   }
 
+  static async GetUsersByFilter(predicate: (user:User) => boolean): Promise<User[]> {
+    const query = `
+        SELECT * FROM users;
+        `
+    const res = (await Query<User>(query)).filter(predicate)
+    return res
+  }
+
   static async GetUsers (): Promise<User[]> {
     const query = `
         SELECT * FROM users;
@@ -87,12 +95,21 @@ export class Configs {
     return res[0]
   }
 
-  static async GetConfigs (predicate?: (config:Config) => boolean): Promise<Config[]> {
+  static async GetConfigs(): Promise<Config[]> {
     const query = `
         SELECT * FROM configs;
         `
-    const res = (await Query<Config>(query)).filter(predicate ?? (() => true))
+    const res = await Query<Config>(query)
 
+    return res
+  }
+
+  static async GetConfigsByFilter(predicate: (config:Config) => boolean): Promise<Config[]> {
+    const query = `
+        SELECT * FROM configs;
+        `
+
+    const res = (await Query<Config>(query)).filter(predicate)
     return res
   }
 
