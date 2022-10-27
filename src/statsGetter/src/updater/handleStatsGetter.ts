@@ -115,7 +115,8 @@ export default class HandleStatsGetter {
     return res.data.token;
   }
 
-  async TestHost(host: string, port: number): Promise<any> {
+  async TestHost(): Promise<any> {
+    const host = this.host;
     const executeReq = new Promise((resolve) => {
       try {
         const sock = new net.Socket();
@@ -136,7 +137,7 @@ export default class HandleStatsGetter {
             sock.destroy();
             resolve(false);
           })
-          .connect(port, host);
+          .connect(host);
       } catch (error) {
         resolve(false);
       }
@@ -145,6 +146,11 @@ export default class HandleStatsGetter {
     return await Promise.race([executeReq, maxTime]).then((result: any) => {
       return result;
     });
+  }
+
+  async TestToken(): Promise<any> {
+    const res = await this.req("/api/auth/me", "GET");
+    return true;
   }
 
   async GetMemory(): Promise<any> {
@@ -241,13 +247,8 @@ export default class HandleStatsGetter {
       );
       return;
     }
-    const isPrivateServerHostOnline =
-      config.is_private_server &&
-      (await this.TestHost(config.host || "", config.port || 21025));
-    if (config.is_private_server && !isPrivateServerHostOnline) {
-      logger.error(
-        `${config.config_id} - ${config.host}:${config.port} is offline`
-      );
+    if (!await this.TestHost()) {
+      logger.error(`${config.config_id} - ${config.host}:${config.port} is offline`);
       return;
     }
 
@@ -259,7 +260,11 @@ export default class HandleStatsGetter {
         );
         return;
       }
-      config.token = token;
+    }
+
+    if (!await this.TestToken()) {
+      logger.error(`${config.config_id} - ${config.token} is an non active token`);
+      return;
     }
 
     const leaderboard = await this.GetLeaderboard();
