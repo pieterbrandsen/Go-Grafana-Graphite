@@ -25,6 +25,13 @@ const clientId = process.env.GITHUB_OAUTH_CLIENT_ID || "";
 const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET || "";
 const host = process.env.FRONTEND_URL;
 
+const isAuthorized = (testToken:string) => testToken === process.env.AUTH_TOKEN;
+
+app.get("/api/testApiAuthentication", async (req, res) => {
+  if (!isAuthorized(req.query.token as string)) return res.status(401).send("Unauthorized");
+  res.send("Hello World!");
+})
+
 async function GetAccessToken(code:string) {
   try {
     const loginResponse = await axios({
