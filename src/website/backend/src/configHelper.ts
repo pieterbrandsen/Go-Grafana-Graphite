@@ -32,6 +32,8 @@ async function ValidateConfig(config:Partial<Config>): Promise<Config | string> 
     else {
         if (!config.host || typeof config.host !== "string") return "Invalid host";
         if (!config.port || typeof config.port !== "number") return "Invalid number";
+        if (!config.interval || typeof config.interval !== "number") config.interval = normalInterval;
+        if (config.interval < normalInterval || config.interval > normalInterval * 15) return "Out of range interval values";
         config.shard = "private";
         if (!config.private_server_password || typeof config.private_server_password !== "string") return "Invalid private_server_password";
         if (config.include_server_stats === undefined || typeof config.include_server_stats !== "boolean") return "Invalid include_server_stats";
