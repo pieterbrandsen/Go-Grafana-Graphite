@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import winston from "winston";
 import axios from "axios";
 import { Configs, Users } from "./postgres/query";
-import {CreateConfigModel, UpdateConfigModel} from "./configHelper";
+import { ValidateConfig } from "./configHelper";
 
 const logger = winston.createLogger({
   level: "info",
@@ -27,63 +27,129 @@ const clientId = process.env.GITHUB_OAUTH_CLIENT_ID || "";
 const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET || "";
 const host = process.env.FRONTEND_URL;
 
-const isAuthorized = (testToken: string) =>
-  testToken === process.env.AUTH_TOKEN;
-
-app.post("/api/config/create", async (req, res) => {
-  if (!isAuthorized(req.query.token as string))
-    return res.status(401).send("Unauthorized");
-  const { githubUserId, config } = req.query;
+async function AuthorizeUser(query: any) {
+  const { githubUserId, config } = query;
   if (!githubUserId || !config)
-    return res.status(400).send("Bad Request, missing githubUserId or config");
+    return {
+      code: 400,
+      message: "Bad Request, missing githubUserId or config",
+    };
   const githubUserIdNumber = parseInt(githubUserId as string);
   if (isNaN(githubUserIdNumber))
-    return res.status(400).send("Bad Request, githubUserId is not a number");
-  const user = (await Users.GetUsersByFilter(
-    (u) => u.github_user_id === githubUserIdNumber
-  ))[0];
-  if (!user) return res.status(400).send("Bad Request, user not found");
+    return { code: 400, message: "Bad Request, githubUserId is not a number" };
+  const user = (
+    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
+  )[0];
+  if (!user) return { code: 400, message: "Bad Request, user not found" };
+  return undefined;
+}
 
-  const configModel = await CreateConfigModel(config as Partial<Config>);
+app.post("/api/config/create", async (req, res) => {
+  const authorizeUserResult = await AuthorizeUser(req.query);
+  if (authorizeUserResult !== undefined)
+    return res
+      .status(authorizeUserResult.code)
+      .send(authorizeUserResult.message);
+  const config = req.query.config as Partial<Config>;
+  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
+  const user = (
+    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
+  )[0];
+
+  if (config.user_id !== user.user_id)
+    return res
+      .status(400)
+      .send("Bad Request, user.user_id does not match config.user_id");
+
+  const configModel = await ValidateConfig(config);
   if (typeof configModel === "string")
     return res
       .status(400)
       .send("Bad Request, config is not valid: " + configModel);
 
   const result = await Configs.CreateConfig(configModel);
-  console.log("create",configModel, result);
+  logger.info(`create ${configModel.config_id} ${result}`);
   if (!result) return res.status(500).send("Internal Server Error");
   return res.status(200).send("OK");
 });
 
 app.post("/api/config/update", async (req, res) => {
-  if (!isAuthorized(req.query.token as string))
-    return res.status(401).send("Unauthorized");
-  const { githubUserId, config } = req.query;
-  if (!githubUserId || !config)
-    return res.status(400).send("Bad Request, missing githubUserId or config");
-  const githubUserIdNumber = parseInt(githubUserId as string);
-  if (isNaN(githubUserIdNumber))
-    return res.status(400).send("Bad Request, githubUserId is not a number");
-  const user = (await Users.GetUsersByFilter(
-    (u) => u.github_user_id === githubUserIdNumber
-  ))[0];
-  if (!user) return res.status(400).send("Bad Request, user not found");
+  const authorizeUserResult = await AuthorizeUser(req.query);
+  if (authorizeUserResult !== undefined)
+    return res
+      .status(authorizeUserResult.code)
+      .send(authorizeUserResult.message);
+  const config = req.query.config as Partial<Config>;
+  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
+  const user = (
+    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
+  )[0];
 
-  const partialConfig = config as Partial<Config>;
-  const configModelInDb = (await Configs.GetConfigsByFilter(c=>c.config_id === partialConfig.config_id))[0];
-  if (!configModelInDb) return res.status(400).send("Bad Request, config not found");
+  const configModelInDb = (
+    await Configs.GetConfigsByFilter(
+      (c) => c.config_id === config.config_id && c.user_id === user.user_id
+    )
+  )[0];
+  if (!configModelInDb)
+    return res.status(400).send("Bad Request, config not found");
 
-  const configModel = await CreateConfigModel(partialConfig);
+  const configModel = await ValidateConfig(config);
   if (typeof configModel === "string")
     return res
       .status(400)
       .send("Bad Request, config is not valid: " + configModel);
 
   const result = await Configs.UpdateConfig(configModel);
-  console.log("update", configModel, result);
+  logger.info(`update ${configModel.config_id} ${result}`);
   if (!result) return res.status(500).send("Internal Server Error");
   return res.status(200).send("OK");
+});
+
+app.put("/api/config/delete", async (req, res) => {
+  const authorizeUserResult = await AuthorizeUser(req.query);
+  if (authorizeUserResult !== undefined)
+    return res
+      .status(authorizeUserResult.code)
+      .send(authorizeUserResult.message);
+  const configId = req.query.configId as unknown as number;
+
+  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
+  const user = (
+    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
+  )[0];
+
+  const configModelInDb = (
+    await Configs.GetConfigsByFilter(
+      (c) => c.config_id === configId && c.user_id === user.user_id
+    )
+  )[0];
+  if (!configModelInDb)
+    return res.status(400).send("Bad Request, config not found");
+
+  const result = await Configs.DeleteConfig(configId);
+  logger.info(`delete ${configId} ${result}`);
+  if (!result) return res.status(500).send("Internal Server Error");
+  return res.status(200).send("OK");
+});
+
+app.post("/api/config/getAll", async (req, res) => {
+  const authorizeUserResult = await AuthorizeUser(req.query);
+  if (authorizeUserResult !== undefined)
+    return res
+      .status(authorizeUserResult.code)
+      .send(authorizeUserResult.message);
+
+  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
+  const user = (
+    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
+  )[0];
+
+  const result = await Configs.GetConfigsByFilter(
+    (c) => c.user_id === user.user_id
+  );
+  logger.info(`getAll ${githubUserIdNumber} ${result.length}`);
+  if (!result) return res.status(500).send("Internal Server Error");
+  return res.status(200).send(result);
 });
 
 async function GetAccessToken(code: string) {
@@ -159,9 +225,9 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
       );
     }
 
-    const user = (await Users.GetUsersByFilter(
-      (u) => u.github_user_id === id
-    ))[0];
+    const user = (
+      await Users.GetUsersByFilter((u) => u.github_user_id === id)
+    )[0];
     if (!user) {
       const userCreationResult = await Users.CreateUser({
         email,
@@ -177,11 +243,8 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
         message =
           "Successfully logged in! You can go back to what you wanted to do now.";
       }
-    }
-    else {
-      logger.info(
-        `db/getUser response: "User found"`
-      );
+    } else {
+      logger.info(`db/getUser response: "User found"`);
     }
   } catch (error) {
     message =

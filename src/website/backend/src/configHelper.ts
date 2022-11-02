@@ -6,12 +6,17 @@ async function GetInterval(userId: number): Promise<number> {
     return (1 + userConfigs.length) * normalInterval;
 }
 
-async function ValidateConfig(config:Partial<Config>): Promise<Config | string> {
+export async function ValidateConfig(config:Partial<Config>): Promise<Config | string> {
     if (!config) return "No config provided";
+
     if (!config.config_name || typeof config.config_name !== "string") return "Invlaid config_name";
     if (!config.user_id || typeof config.user_id !== "number") return "Invalid user_id";
     const user = Users.GetUser(config.user_id);
     if (!user) return "User does not exist";
+
+    if (!config.active) config.active = false;
+    if (typeof config.active !== "boolean") return "Invalid active";
+    if (config.active === false) return config as Config;
 
     if (config.prefix && typeof config.prefix !== "string") return "Invalid prefix";
     if (!config.username || typeof config.username !== "string") return "Invalid username";
@@ -39,12 +44,4 @@ async function ValidateConfig(config:Partial<Config>): Promise<Config | string> 
         if (config.include_server_stats === undefined || typeof config.include_server_stats !== "boolean") return "Invalid include_server_stats";
     }
     return config as Config;
-}
-
-export async function CreateConfigModel(config:Partial<Config>): Promise<Config | string> {
-    return await ValidateConfig(config);
-}
-
-export async function UpdateConfigModel(config:Partial<Config>): Promise<Config | string> {
-    return await ValidateConfig(config);
 }
