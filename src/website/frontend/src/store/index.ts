@@ -18,6 +18,7 @@ export default createStore({
       commit('setUser');
     },
     logoutUser({ commit }) {
+      console.log('logoutUser');
       commit('logoutUser');
     },
   },
