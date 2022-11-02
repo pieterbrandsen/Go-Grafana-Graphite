@@ -148,8 +148,16 @@ export default class HandleStatsGetter {
     });
   }
 
-  async TestToken(): Promise<any> {
+  async TestToken(): Promise<boolean> {
+    if (this.config.is_private_server) {
+      const token = await this.GetPrivateServerToken();
+      if (token === undefined) {
+        return false;
+      }
+    }
+
     const res = await this.req("/api/auth/me", "GET");
+    if (res === undefined) return false;
     return true;
   }
 

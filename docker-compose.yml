@@ -6,8 +6,6 @@ volumes:
 services:
   custom-api:
     build: src/customApi
-    ports:
-      - "8000:8000"
     volumes:
       - ./go-carbon-storage/whisper:/go-carbon-storage
       - ./exampleStats/dashboard.json:/app/dist/dashboard.json
