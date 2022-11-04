@@ -44,6 +44,14 @@ async function AuthorizeUser(query: any) {
   return undefined;
 }
 
+async function GetUserFromGithubUser(githubUser: any) {
+  const githubUserIdNumber = parseInt(githubUser as string);
+  const user = (
+    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
+  )[0];
+  return user;
+}
+
 app.post("/api/config/create", async (req, res) => {
   const authorizeUserResult = await AuthorizeUser(req.query);
   if (authorizeUserResult !== undefined)
@@ -51,10 +59,7 @@ app.post("/api/config/create", async (req, res) => {
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
   const config = req.query.config as Partial<Config>;
-  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
-  const user = (
-    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
-  )[0];
+  const user = await GetUserFromGithubUser(req.query.githubUser);
 
   if (config.user_id !== user.user_id)
     return res
@@ -80,10 +85,7 @@ app.put("/api/config/update", async (req, res) => {
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
   const config = req.query.config as Partial<Config>;
-  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
-  const user = (
-    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
-  )[0];
+  const user = await GetUserFromGithubUser(req.query.githubUser);
 
   const configModelInDb = (
     await Configs.GetConfigsByFilter(
@@ -112,11 +114,7 @@ app.delete("/api/config/delete", async (req, res) => {
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
   const configId = req.query.configId as unknown as number;
-
-  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
-  const user = (
-    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
-  )[0];
+  const user = await GetUserFromGithubUser(req.query.githubUser);
 
   const configModelInDb = (
     await Configs.GetConfigsByFilter(
@@ -139,15 +137,11 @@ app.post("/api/config/getAll", async (req, res) => {
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
 
-  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
-  const user = (
-    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
-  )[0];
-
+  const user = await GetUserFromGithubUser(req.query.githubUser);
   const result = await Configs.GetConfigsByFilter(
     (c) => c.user_id === user.user_id
   );
-  logger.info(`getAll ${githubUserIdNumber} ${result.length}`);
+  logger.info(`getAll ${req.query.githubUser} ${result.length}`);
   if (!result) return res.status(500).send("Internal Server Error");
   return res.status(200).send(result);
 });
@@ -159,10 +153,7 @@ app.get("/api/config/test", async (req, res) => {
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
   const config = req.query.config as Partial<Config>;
-  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
-  const user = (
-    await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
-  )[0];
+  const user = await GetUserFromGithubUser(req.query.githubUser);
   if (config.user_id !== user.user_id)
     return res
       .status(400)
