@@ -9,7 +9,6 @@
 import { Options, Vue } from 'vue-class-component';
 import store from '@/store';
 import Link from '@/components/base/Link.vue';
-import { ref } from 'vue';
 import PageTitle from '@/components/base/PageTitle.vue';
 import Cookies from 'js-cookie';
 

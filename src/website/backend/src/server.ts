@@ -266,6 +266,8 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
           "Successfully logged in! You can go back to what you wanted to do now.";
       }
     } else {
+      message =
+      "Successfully logged in! You can go back to what you wanted to do now.";
       logger.info(`db/getUser response: "User found"`);
     }
   } catch (error) {

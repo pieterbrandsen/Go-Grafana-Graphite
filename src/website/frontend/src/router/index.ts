@@ -1,5 +1,5 @@
 import GetGitHubOAuthPath from '@/oauth/GithubAuth';
-import { Vue } from 'vue-class-component';
+import store from '@/store';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 const Navbar = () => import('@/components/base/Navbar.vue');
@@ -52,7 +52,24 @@ const routes: Array<RouteRecordRaw> = [
       Footer,
     },
   },
-
+  {
+    path: '/grafana/configs',
+    name: 'grafana-configs',
+    components: {
+      default: () => import('@/views/grafana/Configs.vue'),
+      Navbar,
+      Footer,
+    },
+    beforeEnter: (to, from, next) => {
+      const githubUserId = store.state.id;
+      console.log('githubUserId', githubUserId);
+      if (githubUserId === undefined) {
+        next({ name: 'github-oauth' });
+      } else {
+        next();
+      }
+    },
+  },
   {
     path: '/github/oauth',
     name: 'github-oauth',

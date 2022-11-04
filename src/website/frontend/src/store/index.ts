@@ -18,7 +18,6 @@ export default createStore({
       commit('setUser');
     },
     logoutUser({ commit }) {
-      console.log('logoutUser');
       commit('logoutUser');
     },
   },
@@ -26,7 +25,6 @@ export default createStore({
     setUser(state:UserState) {
       state.username = Cookies.getJSON('username');
       state.id = Cookies.getJSON('id');
-      console.log(state);
     },
     logoutUser(state:UserState) {
       state.username = undefined;
