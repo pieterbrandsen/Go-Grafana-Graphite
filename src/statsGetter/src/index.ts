@@ -39,9 +39,10 @@ app.get("/api/test", async (req, res) => {
   const config = req.query.config as unknown as Config;
   const statsGetter = new HandleStatsGetter(config);
   const hostOnline = await statsGetter.TestHost();
-  if (!hostOnline) return "Host is not successfully pinged";
+  if (!hostOnline) return res.status(400).send( "Host is not successfully pinged");
   const tokenOnline = await statsGetter.TestToken();
-  return tokenOnline ? "Connection is successful" : "Connection is not successful";
+  if (!tokenOnline) return res.status(400).send( "Token is not successfully pinged");
+  return res.status(200).send( "Host and token are successfully pinged");
 });
 
 app.listen(3000, () => {

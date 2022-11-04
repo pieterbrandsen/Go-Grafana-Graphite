@@ -93,12 +93,12 @@ app.put("/api/config/update", async (req, res) => {
   if (!configModelInDb)
     return res.status(400).send("Bad Request, config not found");
 
-    const configModel = await ValidateConfig(config);
-    if (typeof configModel === "string")
-      return res
-        .status(400)
-        .send("Bad Request, config is not valid: " + configModel);
-  
+  const configModel = await ValidateConfig(config);
+  if (typeof configModel === "string")
+    return res
+      .status(400)
+      .send("Bad Request, config is not valid: " + configModel);
+
   const result = await Configs.UpdateConfig(configModel);
   logger.info(`update ${configModel.config_id} ${result}`);
   if (!result) return res.status(500).send("Internal Server Error");
@@ -158,12 +158,15 @@ app.get("/api/config/test", async (req, res) => {
     return res
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
-      const config = req.query.config as Partial<Config>;
-      const githubUserIdNumber = parseInt(req.query.githubUserId as string);
+  const config = req.query.config as Partial<Config>;
+  const githubUserIdNumber = parseInt(req.query.githubUserId as string);
   const user = (
     await Users.GetUsersByFilter((u) => u.github_user_id === githubUserIdNumber)
   )[0];
-  if (config.user_id !== user.user_id) return res.status(400).send("Bad Request, user.user_id does not match config.user_id");
+  if (config.user_id !== user.user_id)
+    return res
+      .status(400)
+      .send("Bad Request, user.user_id does not match config.user_id");
 
   const configModel = await ValidateConfig(config);
   if (typeof configModel === "string")
@@ -171,13 +174,13 @@ app.get("/api/config/test", async (req, res) => {
       .status(400)
       .send("Bad Request, config is not valid: " + configModel);
 
-      const result = await axios.post("http://stats-getter:3000/api/test", {
-        config: configModel,
-        clientSecret: process.env.STATS_GETTER_CLIENT_SECRET,
-      })
+  const result = await axios.post("http://stats-getter:3000/api/test", {
+    config: configModel,
+    clientSecret: process.env.STATS_GETTER_CLIENT_SECRET,
+  });
 
-  logger.info(`test ${config.config_id} ${result}`);
-  return res.status(200).send(result);
+  logger.info(`test ${config.config_id} ${result.data}`);
+  return res.status(result.status).send(result.data);
 });
 
 async function GetAccessToken(code: string) {
