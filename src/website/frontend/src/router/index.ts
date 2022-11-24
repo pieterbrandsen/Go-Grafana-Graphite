@@ -62,7 +62,6 @@ const routes: Array<RouteRecordRaw> = [
     },
     beforeEnter: (to, from, next) => {
       const githubUserId = store.state.id;
-      console.log('githubUserId', githubUserId);
       if (githubUserId === undefined) {
         next({ name: 'github-oauth' });
       } else {

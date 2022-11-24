@@ -34,13 +34,13 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - CARBON_RELAY_NG_URL=http://carbon-relay-ng:2003
-  vue3-frontend:
-    build: src/website/frontend
-    ports:
-      - "8080:8080"
-    networks:
-      - frontend
-      - backend
+  # vue3-frontend:
+  #   build: src/website/frontend
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - frontend
+  #     - backend
   vue3-backend:
     build: src/website/backend
     ports:

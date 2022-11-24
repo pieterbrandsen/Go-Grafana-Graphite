@@ -15,6 +15,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vuejs-accessibility/click-events-have-key-events': 'off',
-    'max-len': ['error', { code: 250 }],
+    'max-len': ['error', { code: 9999 }],
+    'vuejs-accessibility/label-has-for': 'off',
   },
 };

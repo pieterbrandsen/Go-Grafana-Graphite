@@ -23,16 +23,42 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Add headers before the routes are defined
+app.use(function (req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+
+  // Request methods you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  // Request headers you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+
+  // Pass to next layer of middleware
+  next();
+});
+
 const clientId = process.env.GITHUB_OAUTH_CLIENT_ID || "";
 const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET || "";
 const host = process.env.FRONTEND_URL;
 
-async function AuthorizeUser(query: any) {
+async function AuthorizeUser(query: any, includeConfig = true) {
   const { githubUserId, config } = query;
-  if (!githubUserId || !config)
+  if (!githubUserId)
     return {
       code: 400,
-      message: "Bad Request, missing githubUserId or config",
+      message: "Bad Request, missing githubUserId",
+    };
+  if (!config && includeConfig)
+    return {
+      code: 400,
+      message: "Bad Request, missing config",
     };
   const githubUserIdNumber = parseInt(githubUserId as string);
   if (isNaN(githubUserIdNumber))
@@ -53,19 +79,20 @@ async function GetUserFromGithubUser(githubUser: any) {
 }
 
 app.post("/api/config/create", async (req, res) => {
-  const authorizeUserResult = await AuthorizeUser(req.query);
+  const authorizeUserResult = await AuthorizeUser(req.body);
   if (authorizeUserResult !== undefined)
     return res
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
-  const config = req.query.config as Partial<Config>;
-  const user = await GetUserFromGithubUser(req.query.githubUser);
+  const config = req.body.config as Partial<Config>;
+  const user = await GetUserFromGithubUser(req.body.githubUser);
 
   if (config.user_id !== user.user_id)
     return res
       .status(400)
       .send("Bad Request, user.user_id does not match config.user_id");
 
+  config.user_id = user.user_id;
   const configModel = await ValidateConfig(config);
   if (typeof configModel === "string")
     return res
@@ -78,14 +105,14 @@ app.post("/api/config/create", async (req, res) => {
   return res.status(200).send("OK");
 });
 
-app.put("/api/config/update", async (req, res) => {
-  const authorizeUserResult = await AuthorizeUser(req.query);
+app.post("/api/config/update", async (req, res) => {
+  const authorizeUserResult = await AuthorizeUser(req.body);
   if (authorizeUserResult !== undefined)
     return res
       .status(authorizeUserResult.code)
       .send(authorizeUserResult.message);
-  const config = req.query.config as Partial<Config>;
-  const user = await GetUserFromGithubUser(req.query.githubUser);
+  const config = req.body.config as Partial<Config>;
+  const user = await GetUserFromGithubUser(req.body.githubUser);
 
   const configModelInDb = (
     await Configs.GetConfigsByFilter(
@@ -95,6 +122,7 @@ app.put("/api/config/update", async (req, res) => {
   if (!configModelInDb)
     return res.status(400).send("Bad Request, config not found");
 
+  config.user_id = user.user_id;
   const configModel = await ValidateConfig(config);
   if (typeof configModel === "string")
     return res
@@ -107,8 +135,8 @@ app.put("/api/config/update", async (req, res) => {
   return res.status(200).send("OK");
 });
 
-app.delete("/api/config/delete", async (req, res) => {
-  const authorizeUserResult = await AuthorizeUser(req.query);
+app.post("/api/config/delete", async (req, res) => {
+  const authorizeUserResult = await AuthorizeUser(req.query, false);
   if (authorizeUserResult !== undefined)
     return res
       .status(authorizeUserResult.code)
@@ -130,8 +158,8 @@ app.delete("/api/config/delete", async (req, res) => {
   return res.status(200).send("OK");
 });
 
-app.post("/api/config/getAll", async (req, res) => {
-  const authorizeUserResult = await AuthorizeUser(req.query);
+app.get("/api/config/getAll", async (req, res) => {
+  const authorizeUserResult = await AuthorizeUser(req.query, false);
   if (authorizeUserResult !== undefined)
     return res
       .status(authorizeUserResult.code)
@@ -267,7 +295,7 @@ app.get("/api/sessions/oauth/github", async (req, res) => {
       }
     } else {
       message =
-      "Successfully logged in! You can go back to what you wanted to do now.";
+        "Successfully logged in! You can go back to what you wanted to do now.";
       logger.info(`db/getUser response: "User found"`);
     }
   } catch (error) {
