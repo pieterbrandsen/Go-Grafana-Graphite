@@ -6,9 +6,8 @@ import { Users } from "../postgres/query";
 import winston from "winston";
 import net from "net";
 import {
-  ConvertServerStats,
   ConvertAdminUtilsServerStats,
-} from "./serverStats";
+} from "./convertServerStats";
 if (process.env.CARBON_RELAY_NG_URL === undefined) {
   process.env.CARBON_RELAY_NG_URL = "http://localhost:2003";
 }
@@ -201,13 +200,8 @@ export default class HandleStatsGetter {
     return { rank, score };
   }
 
-  async getUsers(): Promise<any> {
-    const res = await this.req("/api/stats/users", "GET");
-    return res;
-  }
-
-  async getRoomsObjects(): Promise<any> {
-    const res = await this.req("/api/stats/rooms/objects", "GET");
+  async getServerStats(): Promise<any> {
+    const res = await this.req("/api/stats/server", "GET");
     return res;
   }
 
@@ -291,11 +285,7 @@ export default class HandleStatsGetter {
     let adminUtilsServerStats;
 
     if (config.include_server_stats) {
-      const users = await this.getUsers();
-      const roomsObjects = await this.getRoomsObjects();
-      if (users !== undefined && roomsObjects !== undefined)
-        serverStats = ConvertServerStats(users.data, roomsObjects.data);
-
+      const serverStats = await this.getServerStats();
       const adminUtilsServerStatsRes = await this.getAdminUtilsServerStats();
       adminUtilsServerStats = ConvertAdminUtilsServerStats(
         adminUtilsServerStatsRes
