@@ -16,7 +16,7 @@
         />
       </div>
     </div>
-    <div v-if="config.is_private_server">
+    <!-- <div v-if="config.is_private_server"> -->
       <h2 class="text-l">Private Server specific</h2>
       <br />
       <div v-for="(field, index) in privateFields" :key="index" class="mb-6">
@@ -31,8 +31,8 @@
           required
         />
       </div>
-    </div>
-    <div v-else>
+    <!-- </div> -->
+    <!-- <div v-else> -->
       <h2 class="text-l">MMO specific</h2>
       <br />
       <div v-for="(field, index) in mmoFields" :key="index" class="mb-6">
@@ -47,7 +47,7 @@
           required
         />
       </div>
-    </div>
+    <!-- </div> -->
     <button
       type="submit"
       class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
